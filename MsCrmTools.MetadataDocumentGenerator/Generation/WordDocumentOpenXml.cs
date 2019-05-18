@@ -1,18 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Globalization;
-using System.Linq;
-using System.Windows;
-using System.Xml;
-using DocumentFormat.OpenXml;
+﻿using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Messages;
 using Microsoft.Xrm.Sdk.Metadata;
 using MsCrmTools.MetadataDocumentGenerator.Helper;
-
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Globalization;
+using System.Linq;
+using System.Windows;
+using System.Xml;
 
 namespace MsCrmTools.MetadataDocumentGenerator.Generation
 {
@@ -26,12 +25,13 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
         /// Word document
         /// </summary>
         private Document _innerDocument;
-        private WordprocessingDocument _wordDocument = null;
-        
+
         /// <summary>
         /// Generation Settings
         /// </summary>
         private GenerationSettings _settings;
+
+        private WordprocessingDocument _wordDocument = null;
         private IEnumerable<Entity> currentEntityForms;
 
         private BackgroundWorker worker;
@@ -69,8 +69,217 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
         }
 
         #region Methods
+
         /// <summary>
-        /// Generate the Word Document for the current selections 
+        /// Add an attribute metadata
+        /// </summary>
+        /// <param name="attributeMetadataList">List of Attribute metadata</param>
+        public void AddAttribute(IEnumerable<AttributeMetadata> attributeMetadataList)
+        {
+            var p = AddParagraph("Attributes", "Heading2", "Heading 2");
+
+            var header = new List<string>
+                             {
+                                 "Logical Name",
+                                 "Schema Name",
+                                 "Display Name",
+                                 "Type",
+                                 "Description",
+                                 "Is Custom"
+                             };
+
+            var amds = attributeMetadataList.OrderBy(attr => attr.SchemaName).Distinct(new AttributeMetadataComparer());
+
+            var table = AddTable();
+
+            int rowIndex = 0;
+
+            foreach (var amd in amds)
+            {
+                var displayNameLabel = amd.DisplayName.LocalizedLabels.Count == 0
+                                           ? null
+                                           : amd.DisplayName.LocalizedLabels.FirstOrDefault(
+                                               l => l.LanguageCode == _settings.DisplayNamesLangugageCode);
+                var descriptionLabel = amd.Description.LocalizedLabels.Count == 0
+                                           ? null
+                                           : amd.Description.LocalizedLabels.FirstOrDefault(
+                                               l => l.LanguageCode == _settings.DisplayNamesLangugageCode);
+
+                var displayName = displayNameLabel != null ? displayNameLabel.Label : "Not Translated";
+                var description = descriptionLabel != null ? descriptionLabel.Label : "Not Translated";
+
+                var metadata = new List<string>
+                                   {
+                                       amd.LogicalName,
+                                       amd.SchemaName,
+                                       displayName,
+                                       amd.AttributeType != null ? amd.AttributeType.HasValue && amd.AttributeType == AttributeTypeCode.Virtual  && amd is MultiSelectPicklistAttributeMetadata ? "MutliSelect OptionSet": amd.AttributeType.HasValue ? amd.AttributeType.Value.ToString() : string.Empty: string.Empty,
+                                       description,
+                                       amd.IsCustomAttribute != null
+                                           ? amd.IsCustomAttribute.Value.ToString(CultureInfo.InvariantCulture)
+                                           : string.Empty
+                                   };
+
+                if (_settings.AddRequiredLevelInformation)
+                {
+                    metadata.Add(amd.RequiredLevel.Value.ToString());
+                    if (!header.Contains("Required Level")) header.Add("Required Level");
+                }
+
+                if (_settings.AddValidForAdvancedFind)
+                {
+                    metadata.Add(amd.IsValidForAdvancedFind.Value.ToString(CultureInfo.InvariantCulture));
+                    if (!header.Contains("Valid for AF")) header.Add("Valid for AF");
+                }
+
+                if (_settings.AddAuditInformation)
+                {
+                    metadata.Add(amd.IsAuditEnabled.Value.ToString(CultureInfo.InvariantCulture));
+                    if (!header.Contains("Audit Enabled")) header.Add("Audit Enabled");
+                }
+
+                if (_settings.AddFieldSecureInformation)
+                {
+                    metadata.Add(amd.IsSecured.Value.ToString(CultureInfo.InvariantCulture));
+                    if (!header.Contains("Is Secured")) header.Add("Is Secured");
+                }
+
+                if (_settings.AddFormLocation)
+                {
+                    string data = string.Empty;
+
+                    var entity = _settings.EntitiesToProceed.First(e => e.Name == amd.EntityLogicalName);
+
+                    foreach (var form in entity.FormsDefinitions.Where(fd => entity.Forms.Contains(fd.Id) || entity.Forms.Count == 0))
+                    {
+                        var formName = form.GetAttributeValue<string>("name");
+                        var xmlDocument = new XmlDocument();
+                        xmlDocument.LoadXml(form["formxml"].ToString());
+
+                        var controlNode = xmlDocument.SelectSingleNode("//control[@datafieldname='" + amd.LogicalName + "']");
+                        if (controlNode != null)
+                        {
+                            XmlNodeList sectionNodes = controlNode.SelectNodes("ancestor::section");
+                            XmlNodeList headerNodes = controlNode.SelectNodes("ancestor::header");
+                            XmlNodeList footerNodes = controlNode.SelectNodes("ancestor::footer");
+
+                            if (sectionNodes.Count > 0)
+                            {
+                                var sectionName = sectionNodes[0].SelectSingleNode("labels/label[@languagecode='" + _settings.DisplayNamesLangugageCode + "']").Attributes["description"].Value;
+
+                                XmlNode tabNode = sectionNodes[0].SelectNodes("ancestor::tab")[0];
+                                var tabName = tabNode.SelectSingleNode("labels/label[@languagecode='" + _settings.DisplayNamesLangugageCode + "']").Attributes["description"].Value;
+
+                                if (data.Length > 0)
+                                {
+                                    data += "\n" + string.Format("{0}/{1}/{2}", formName, tabName, sectionName);
+                                }
+                                else
+                                {
+                                    data = string.Format("{0}/{1}/{2}", formName, tabName, sectionName);
+                                }
+                            }
+                            else if (headerNodes.Count > 0)
+                            {
+                                if (data.Length > 0)
+                                {
+                                    data += "\n" + string.Format("{0}/Header", formName);
+                                }
+                                else
+                                {
+                                    data = string.Format("{0}/Header", formName);
+                                }
+                            }
+                            else if (footerNodes.Count > 0)
+                            {
+                                if (data.Length > 0)
+                                {
+                                    data += "\n" + string.Format("{0}/Footer", formName);
+                                }
+                                else
+                                {
+                                    data = string.Format("{0}/Footer", formName);
+                                }
+                            }
+                        }
+                    }
+
+                    metadata.Add(data);
+                    if (!header.Contains("Form Location")) header.Add("Form Location");
+                }
+
+                metadata.Add(GetAddAdditionalData(amd));
+
+                // add the header row now that they should have all been added
+                if (rowIndex++ == 0)
+                {
+                    header.Add("Additional data");
+                    AddHeaderRow(table, header);
+                }
+                // now add the new row with data
+                AddTableRow(table, metadata);
+            }
+            _innerDocument.Body.InsertAfter(table, p);
+        }
+
+        /// <summary>
+        /// Adds metadata of an entity
+        /// </summary>
+        /// <param name="emd">Entity metadata</param>
+        public void AddEntityMetadata(EntityMetadata emd)
+        {
+            var displayNameLabel = emd.DisplayName.LocalizedLabels.Count == 0
+                                       ? null
+                                       : emd.DisplayName.LocalizedLabels.FirstOrDefault(
+                                           l => l.LanguageCode == _settings.DisplayNamesLangugageCode);
+            var pluralDisplayNameLabel = emd.DisplayCollectionName.LocalizedLabels.Count == 0
+                                             ? null
+                                             : emd.DisplayCollectionName.LocalizedLabels.FirstOrDefault(
+                                                 l => l.LanguageCode == _settings.DisplayNamesLangugageCode);
+            var descriptionLabel = emd.Description.LocalizedLabels.Count == 0
+                                       ? null
+                                       : emd.Description.LocalizedLabels.FirstOrDefault(
+                                           l => l.LanguageCode == _settings.DisplayNamesLangugageCode);
+
+            var displayName = displayNameLabel != null ? displayNameLabel.Label : "Not Translated";
+            var pluralDisplayName = pluralDisplayNameLabel != null ? pluralDisplayNameLabel.Label : "Not Translated";
+            var description = descriptionLabel != null ? descriptionLabel.Label : "Not Translated";
+
+            AddParagraph("Entity: " + displayName, "Heading1", "Heading 1");
+
+            AddParagraph("Metadata", "Heading2", "Heading 2");
+
+            var table = AddTable();
+
+            AddHeaderRow(table, new List<string> { "Property", "Value" });
+
+            AddTableRow(table, new List<string> { "Display Name", displayName });
+            AddTableRow(table, new List<string> { "Plural Display Name", pluralDisplayName });
+            AddTableRow(table, new List<string> { "Description", description });
+            AddTableRow(table, new List<string> { "Schema Name", emd.SchemaName });
+            AddTableRow(table, new List<string> { "Logical Name", emd.LogicalName });
+            AddTableRow(table, new List<string> {
+                                         "Object Type Code",
+                                         emd.ObjectTypeCode != null
+                                             ? emd.ObjectTypeCode.Value.ToString(CultureInfo.InvariantCulture)
+                                             : string.Empty
+                                     });
+            AddTableRow(table, new List<string> {
+                                         "Is Custom Entity",
+                                         (emd.IsCustomEntity != null && emd.IsCustomEntity.Value).ToString(
+                                             CultureInfo.InvariantCulture)
+                                     });
+            AddTableRow(table, new List<string> {
+                                         "Ownership Type",
+                                         emd.OwnershipType != null ? emd.OwnershipType.Value.ToString() : string.Empty
+                                     });
+
+            var lastPara = _innerDocument.Body.ChildElements.Where(e => e is Paragraph).Last();
+            _innerDocument.Body.InsertAfter(table, lastPara);
+        }
+
+        /// <summary>
+        /// Generate the Word Document for the current selections
         /// </summary>
         /// <param name="service"></param>
         public void Generate(IOrganizationService service)
@@ -233,185 +442,43 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
                 _innerDocument.Body.Append(sectionProps);
 
                 SaveDocument(_settings.FilePath);
-
             }
             catch (Exception ex)
             {
                 MessageBox.Show("An error has occurred attempting to generate your Word document:\n" + ex.Message);
             }
-            finally {
+            finally
+            {
                 // ensure some cleanup!
                 _wordDocument?.Close();
             }
         }
 
         /// <summary>
-        /// Helper method to init the new document instance 
+        /// Saves the current workbook
         /// </summary>
-        /// <param name="filepath"></param>
-        private void CreateWordprocessingDocument(string filepath)
+        /// <param name="path">Path where to save the document</param>
+        public void SaveDocument(string path)
         {
-            // Create a document by supplying the filepath. 
-            _wordDocument = WordprocessingDocument.Create(filepath, WordprocessingDocumentType.Document);
-
-            // Add a main document part. 
-            MainDocumentPart mainPart = _wordDocument.AddMainDocumentPart();
-
-            // Create the document structure and add some text.
-            mainPart.Document = new Document();
-            Body body = mainPart.Document.AppendChild(new Body());
-
-            _innerDocument = mainPart.Document;
+            _innerDocument?.Save();
         }
+
         /// <summary>
-        /// Add an attribute metadata
+        /// Add a header row to the Table
         /// </summary>
-        /// <param name="attributeMetadataList">List of Attribute metadata</param>
-        public void AddAttribute(IEnumerable<AttributeMetadata> attributeMetadataList)
+        /// <param name="table"></param>
+        /// <param name="headers"></param>
+        private void AddHeaderRow(Table table, List<string> headers, int rowIndex = 1)
         {
-            var p = AddParagraph("Attributes", "Heading2", "Heading 2");
+            var row = AddTableRow(table, headers, rowIndex);
 
-            var header = new List<string>
-                             {
-                                 "Logical Name",
-                                 "Schema Name",
-                                 "Display Name",
-                                 "Type",
-                                 "Description",
-                                 "Is Custom"
-                             };
-
-            var amds = attributeMetadataList.OrderBy(attr => attr.SchemaName).Distinct(new AttributeMetadataComparer());
-
-            var table = AddTable();
-
-            int rowIndex = 0;
-
-            foreach (var amd in amds)
+            // set the current row properties as table header
+            if (row.TableRowProperties == null)
             {
-                var displayNameLabel = amd.DisplayName.LocalizedLabels.Count == 0
-                                           ? null
-                                           : amd.DisplayName.LocalizedLabels.FirstOrDefault(
-                                               l => l.LanguageCode == _settings.DisplayNamesLangugageCode);
-                var descriptionLabel = amd.Description.LocalizedLabels.Count == 0
-                                           ? null
-                                           : amd.Description.LocalizedLabels.FirstOrDefault(
-                                               l => l.LanguageCode == _settings.DisplayNamesLangugageCode);
-
-                var displayName = displayNameLabel != null ? displayNameLabel.Label : "Not Translated";
-                var description = descriptionLabel != null ? descriptionLabel.Label : "Not Translated";
-
-                var metadata = new List<string>
-                                   {
-                                       amd.LogicalName,
-                                       amd.SchemaName,
-                                       displayName,
-                                       amd.AttributeType != null ? amd.AttributeType.Value.ToString() : string.Empty,
-                                       description,
-                                       amd.IsCustomAttribute != null
-                                           ? amd.IsCustomAttribute.Value.ToString(CultureInfo.InvariantCulture)
-                                           : string.Empty
-                                   };
-
-                if (_settings.AddRequiredLevelInformation)
-                {
-                    metadata.Add(amd.RequiredLevel.Value.ToString());
-                    if (!header.Contains("Required Level")) header.Add("Required Level");
-                }
-
-                if (_settings.AddValidForAdvancedFind)
-                {
-                    metadata.Add(amd.IsValidForAdvancedFind.Value.ToString(CultureInfo.InvariantCulture));
-                    if (!header.Contains("Valid for AF")) header.Add("Valid for AF");
-                }
-
-                if (_settings.AddAuditInformation)
-                {
-                    metadata.Add(amd.IsAuditEnabled.Value.ToString(CultureInfo.InvariantCulture));
-                    if (!header.Contains("Audit Enabled")) header.Add("Audit Enabled");
-                }
-
-                if (_settings.AddFieldSecureInformation)
-                {
-                    metadata.Add(amd.IsSecured.Value.ToString(CultureInfo.InvariantCulture));
-                    if (!header.Contains("Is Secured")) header.Add("Is Secured");
-                }
-
-                if (_settings.AddFormLocation)
-                {
-                   string data = string.Empty;
-
-                    var entity = _settings.EntitiesToProceed.First(e => e.Name == amd.EntityLogicalName);
-
-                    foreach (var form in entity.FormsDefinitions.Where(fd => entity.Forms.Contains(fd.Id) || entity.Forms.Count == 0))
-                    {
-                        var formName = form.GetAttributeValue<string>("name");
-                        var xmlDocument = new XmlDocument();
-                        xmlDocument.LoadXml(form["formxml"].ToString());
-
-                        var controlNode = xmlDocument.SelectSingleNode("//control[@datafieldname='" + amd.LogicalName + "']");
-                        if (controlNode != null)
-                        {
-                            XmlNodeList sectionNodes = controlNode.SelectNodes("ancestor::section");
-                            XmlNodeList headerNodes = controlNode.SelectNodes("ancestor::header");
-                            XmlNodeList footerNodes = controlNode.SelectNodes("ancestor::footer");
-
-                            if (sectionNodes.Count > 0)
-                            {
-                                var sectionName = sectionNodes[0].SelectSingleNode("labels/label[@languagecode='" + _settings.DisplayNamesLangugageCode + "']").Attributes["description"].Value;
-
-                                XmlNode tabNode = sectionNodes[0].SelectNodes("ancestor::tab")[0];
-                                var tabName = tabNode.SelectSingleNode("labels/label[@languagecode='" + _settings.DisplayNamesLangugageCode + "']").Attributes["description"].Value;
-
-                                if (data.Length > 0)
-                                {
-                                    data += "\n" + string.Format("{0}/{1}/{2}", formName, tabName, sectionName);
-                                }
-                                else
-                                {
-                                    data = string.Format("{0}/{1}/{2}", formName, tabName, sectionName);
-                                }
-                            }
-                            else if (headerNodes.Count > 0)
-                            {
-                                if (data.Length > 0)
-                                {
-                                    data += "\n" + string.Format("{0}/Header", formName);
-                                }
-                                else
-                                {
-                                    data = string.Format("{0}/Header", formName);
-                                }
-                            }
-                            else if (footerNodes.Count > 0)
-                            {
-                                if (data.Length > 0)
-                                {
-                                    data += "\n" + string.Format("{0}/Footer", formName);
-                                }
-                                else
-                                {
-                                    data = string.Format("{0}/Footer", formName);
-                                }
-                            }
-                        }
-                    }
-
-                    metadata.Add(data);
-                    if (!header.Contains("Form Location")) header.Add("Form Location");
-                }
-
-                metadata.Add(GetAddAdditionalData(amd));
-
-                // add the header row now that they should have all been added
-                if (rowIndex++ == 0) {
-                    header.Add("Additional data");
-                    AddHeaderRow(table, header);
-                }
-                // now add the new row with data 
-                AddTableRow(table, metadata);
+                row.TableRowProperties = new TableRowProperties();
             }
-            _innerDocument.Body.InsertAfter(table, p);
+            // make this a header that breaks across pages
+            row.TableRowProperties.AppendChild(new TableHeader());
         }
 
         /// <summary>
@@ -420,20 +487,21 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
         /// <param name="content"></param>
         /// <param name="styleName"></param>
         /// <returns></returns>
-        private Paragraph AddParagraph(string content = null, string styleId = null, string styleName = null) {
-
+        private Paragraph AddParagraph(string content = null, string styleId = null, string styleName = null)
+        {
             var para = _innerDocument.Body.AppendChild(new Paragraph());
             var run = para.AppendChild(new Run());
             run.AppendChild(new Text(content));
-            
-            if (styleId != null) {
+
+            if (styleId != null)
+            {
                 OpenXmlHelper.ApplyStyleToParagraph(_wordDocument, styleId, styleName, para);
             }
             return para;
         }
 
         /// <summary>
-        /// Add a new table to the document 
+        /// Add a new table to the document
         /// </summary>
         /// <returns></returns>
         private Table AddTable()
@@ -458,49 +526,6 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
         }
 
         /// <summary>
-        /// Add a header row to the Table
-        /// </summary>
-        /// <param name="table"></param>
-        /// <param name="headers"></param>
-        private void AddHeaderRow(Table table, List<string> headers, int rowIndex = 1)
-        {
-            var row = AddTableRow(table, headers, rowIndex);
-
-            // set the current row properties as table header 
-            if (row.TableRowProperties == null) {
-                row.TableRowProperties = new TableRowProperties();
-            }
-            // make this a header that breaks across pages
-            row.TableRowProperties.AppendChild(new TableHeader());
-        }
-
-        /// <summary>
-        /// Add a new Table Row with a list of strings for cell content
-        /// </summary>
-        /// <param name="table"></param>
-        /// <param name="cellContent"></param>
-        /// <param name="rowIndex"></param>
-        /// <returns></returns>
-        private TableRow AddTableRow(Table table, List<string> cellContent, int? rowIndex = null, string cellStyle = null)
-        {
-            var row = new TableRow();
-            // add each cell to the new row 
-            foreach (var cell in cellContent) {
-                AddTableCell(row, cell);
-            }
-
-            // insert the new TableRow at the correct location 
-            if (rowIndex != null)
-            {
-                table.InsertAt(row, rowIndex.Value);
-            }
-            else {
-                table.Append(row);
-            }
-
-            return row;
-        }
-        /// <summary>
         /// Add the header to the current TableRow
         /// </summary>
         /// <param name="tr"></param>
@@ -517,69 +542,53 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
 
             return tc;
         }
+
         /// <summary>
-        /// Adds metadata of an entity
+        /// Add a new Table Row with a list of strings for cell content
         /// </summary>
-        /// <param name="emd">Entity metadata</param>
-        public void AddEntityMetadata(EntityMetadata emd)
+        /// <param name="table"></param>
+        /// <param name="cellContent"></param>
+        /// <param name="rowIndex"></param>
+        /// <returns></returns>
+        private TableRow AddTableRow(Table table, List<string> cellContent, int? rowIndex = null, string cellStyle = null)
         {
-            var displayNameLabel = emd.DisplayName.LocalizedLabels.Count == 0
-                                       ? null
-                                       : emd.DisplayName.LocalizedLabels.FirstOrDefault(
-                                           l => l.LanguageCode == _settings.DisplayNamesLangugageCode);
-            var pluralDisplayNameLabel = emd.DisplayCollectionName.LocalizedLabels.Count == 0
-                                             ? null
-                                             : emd.DisplayCollectionName.LocalizedLabels.FirstOrDefault(
-                                                 l => l.LanguageCode == _settings.DisplayNamesLangugageCode);
-            var descriptionLabel = emd.Description.LocalizedLabels.Count == 0
-                                       ? null
-                                       : emd.Description.LocalizedLabels.FirstOrDefault(
-                                           l => l.LanguageCode == _settings.DisplayNamesLangugageCode);
+            var row = new TableRow();
+            // add each cell to the new row
+            foreach (var cell in cellContent)
+            {
+                AddTableCell(row, cell);
+            }
 
-            var displayName = displayNameLabel != null ? displayNameLabel.Label : "Not Translated";
-            var pluralDisplayName = pluralDisplayNameLabel != null ? pluralDisplayNameLabel.Label : "Not Translated";
-            var description = descriptionLabel != null ? descriptionLabel.Label : "Not Translated";
+            // insert the new TableRow at the correct location
+            if (rowIndex != null)
+            {
+                table.InsertAt(row, rowIndex.Value);
+            }
+            else
+            {
+                table.Append(row);
+            }
 
-            AddParagraph("Entity: " + displayName, "Heading1", "Heading 1");
-
-            AddParagraph("Metadata", "Heading2", "Heading 2");
-
-            var table = AddTable();
-
-            AddHeaderRow(table, new List<string> { "Property", "Value" });
-
-            AddTableRow(table, new List<string> { "Display Name", displayName });
-            AddTableRow(table, new List<string> { "Plural Display Name", pluralDisplayName });
-            AddTableRow(table, new List<string> { "Description", description });
-            AddTableRow(table, new List<string> { "Schema Name", emd.SchemaName });
-            AddTableRow(table, new List<string> { "Logical Name", emd.LogicalName });
-            AddTableRow(table, new List<string> {
-                                         "Object Type Code",
-                                         emd.ObjectTypeCode != null
-                                             ? emd.ObjectTypeCode.Value.ToString(CultureInfo.InvariantCulture)
-                                             : string.Empty
-                                     });
-            AddTableRow(table, new List<string> {
-                                         "Is Custom Entity",
-                                         (emd.IsCustomEntity != null && emd.IsCustomEntity.Value).ToString(
-                                             CultureInfo.InvariantCulture)
-                                     });
-            AddTableRow(table, new List<string> {
-                                         "Ownership Type",
-                                         emd.OwnershipType != null ? emd.OwnershipType.Value.ToString() : string.Empty
-                                     });
-
-            var lastPara = _innerDocument.Body.ChildElements.Where(e => e is Paragraph).Last();
-            _innerDocument.Body.InsertAfter(table, lastPara);
+            return row;
         }
 
         /// <summary>
-        /// Saves the current workbook
+        /// Helper method to init the new document instance
         /// </summary>
-        /// <param name="path">Path where to save the document</param>
-        public void SaveDocument(string path)
+        /// <param name="filepath"></param>
+        private void CreateWordprocessingDocument(string filepath)
         {
-            _innerDocument?.Save();
+            // Create a document by supplying the filepath.
+            _wordDocument = WordprocessingDocument.Create(filepath, WordprocessingDocumentType.Document);
+
+            // Add a main document part.
+            MainDocumentPart mainPart = _wordDocument.AddMainDocumentPart();
+
+            // Create the document structure and add some text.
+            mainPart.Document = new Document();
+            Body body = mainPart.Document.AppendChild(new Body());
+
+            _innerDocument = mainPart.Document;
         }
 
         private string GetAddAdditionalData(AttributeMetadata amd)
@@ -626,11 +635,6 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
                                 (bamd.DefaultValue != null && bamd.DefaultValue.Value).ToString(
                                     CultureInfo.InvariantCulture));
                         }
-                    case AttributeTypeCode.Customer:
-                        {
-                            // Do Nothing
-                        }
-                        break;
 
                     case AttributeTypeCode.DateTime:
                         {
@@ -691,6 +695,8 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
                                     ? iamd.MaxValue.Value.ToString(CultureInfo.InvariantCulture)
                                     : "N/A");
                         }
+                    case AttributeTypeCode.Customer:
+                    case AttributeTypeCode.Owner:
                     case AttributeTypeCode.Lookup:
                         {
                             var lamd = (LookupAttributeMetadata)amd;
@@ -724,11 +730,6 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
                                     ? mamd.Precision.Value.ToString(CultureInfo.InvariantCulture)
                                     : "N/A");
                         }
-                    case AttributeTypeCode.Owner:
-                        {
-                            // Do nothing
-                        }
-                        break;
 
                     case AttributeTypeCode.PartyList:
                         {
@@ -736,6 +737,36 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
                         }
                         break;
 
+                    case AttributeTypeCode.Virtual:
+                        {
+                            if (amd is MultiSelectPicklistAttributeMetadata mspamd)
+                            {
+                                var format = "Options:";
+
+                                foreach (var omd in mspamd.OptionSet.Options)
+                                {
+                                    var optionLabel = omd.Label.LocalizedLabels.Count == 0
+                                        ? null
+                                        : omd.Label.LocalizedLabels.FirstOrDefault(
+                                            l =>
+                                                l.LanguageCode == _settings.DisplayNamesLangugageCode);
+
+                                    format += string.Format("\n{0}: {1}",
+                                        omd.Value,
+                                        optionLabel != null ? optionLabel.Label : "Not Translated");
+                                }
+
+                                format += string.Format("\nDefault: {0}",
+                                    mspamd.DefaultFormValue.HasValue
+                                        ? mspamd.DefaultFormValue.Value.ToString(
+                                            CultureInfo.InvariantCulture)
+                                        : "N/A");
+
+                                return format;
+                            }
+
+                            break;
+                        }
                     case AttributeTypeCode.Picklist:
                         {
                             var pamd = (PicklistAttributeMetadata)amd;

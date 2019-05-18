@@ -110,6 +110,10 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
             y++;
 
             if (amd.AttributeType != null) sheet.Cells[lineNumber, y].Value = (amd.AttributeType.Value.ToString());
+            if (amd.AttributeType.Value == AttributeTypeCode.Virtual && amd is MultiSelectPicklistAttributeMetadata)
+            {
+                sheet.Cells[lineNumber, y].Value = "MultiSelect OptionSet";
+            }
             y++;
 
             var amdDescription = amd.Description.LocalizedLabels.FirstOrDefault(l => l.LanguageCode == settings.DisplayNamesLangugageCode);
@@ -170,7 +174,6 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
                                     XmlNode tabNode = sectionNodes[0].SelectNodes("ancestor::tab")[0];
                                     if (tabNode != null && tabNode.SelectSingleNode("labels/label[@languagecode='" + settings.DisplayNamesLangugageCode + "']") != null)
                                     {
-
                                         var tabName = tabNode.SelectSingleNode("labels/label[@languagecode='" + settings.DisplayNamesLangugageCode + "']").Attributes["description"].Value;
 
                                         if (sheet.Cells[lineNumber, y].Value != null)
@@ -539,7 +542,6 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
                         break;
                 }
 
-
                 if (settings.Prefixes != null && settings.Prefixes.Count > 0)
                 {
                     var filteredAmds = new List<AttributeMetadata>();
@@ -630,12 +632,6 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
                         }
                         break;
 
-                    case AttributeTypeCode.Customer:
-                        {
-                            // Do Nothing
-                        }
-                        break;
-
                     case AttributeTypeCode.DateTime:
                         {
                             var damd = (DateTimeAttributeMetadata)amd;
@@ -687,6 +683,8 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
                         }
                         break;
 
+                    case AttributeTypeCode.Customer:
+                    case AttributeTypeCode.Owner:
                     case AttributeTypeCode.Lookup:
                         {
                             var lamd = (LookupAttributeMetadata)amd;
@@ -720,25 +718,48 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
                         }
                         break;
 
-                    case AttributeTypeCode.Owner:
-                        {
-                            // Do nothing
-                        }
-                        break;
-
                     case AttributeTypeCode.PartyList:
                         {
                             // Do nothing
                         }
                         break;
 
-                    case AttributeTypeCode.Picklist:
+                    case AttributeTypeCode.Virtual:
+                        if (amd is MultiSelectPicklistAttributeMetadata mspamd)
                         {
-                            var pamd = (PicklistAttributeMetadata)amd;
+                            int? defaultValue = mspamd.DefaultFormValue;
+                            OptionSetMetadata osm = mspamd.OptionSet;
 
                             string format = "Options:";
 
-                            foreach (var omd in pamd.OptionSet.Options)
+                            foreach (var omd in osm.Options)
+                            {
+                                var omdLocLabel = omd.Label.LocalizedLabels.FirstOrDefault(l => l.LanguageCode == settings.DisplayNamesLangugageCode);
+                                if (omdLocLabel != null)
+                                {
+                                    var label = omdLocLabel.Label;
+
+                                    format += $"\r\n{omd.Value}: {label}";
+                                }
+                            }
+
+                            format +=
+                                $"\r\nDefault: {(defaultValue.HasValue && defaultValue != -1 ? defaultValue.Value.ToString(CultureInfo.InvariantCulture) : "N/A")}";
+
+                            sheet.Cells[x, y].Value = (format);
+                        }
+
+                        break;
+
+                    case AttributeTypeCode.Picklist:
+                        {
+                            PicklistAttributeMetadata pamd = (PicklistAttributeMetadata)amd;
+                            int? defaultValue = pamd.DefaultFormValue;
+                            OptionSetMetadata osm = pamd.OptionSet;
+
+                            string format = "Options:";
+
+                            foreach (var omd in osm.Options)
                             {
                                 var omdLocLabel = omd.Label.LocalizedLabels.FirstOrDefault(l => l.LanguageCode == settings.DisplayNamesLangugageCode);
                                 if (omdLocLabel != null)
@@ -751,7 +772,7 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
                                 }
                             }
 
-                            format += string.Format("\r\nDefault: {0}", pamd.DefaultFormValue.HasValue && pamd.DefaultFormValue.Value != -1 ? pamd.DefaultFormValue.Value.ToString(CultureInfo.InvariantCulture) : "N/A");
+                            format += string.Format("\r\nDefault: {0}", defaultValue.HasValue && defaultValue != -1 ? defaultValue.Value.ToString(CultureInfo.InvariantCulture) : "N/A");
 
                             sheet.Cells[x, y].Value = (format);
                         }
