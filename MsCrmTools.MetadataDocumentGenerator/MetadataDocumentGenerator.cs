@@ -166,15 +166,6 @@ namespace MsCrmTools.MetadataDocumentGenerator
 
         private void CbbOutputTypeSelectedIndexChanged(object sender, EventArgs e)
         {
-            if (cbbOutputType.SelectedIndex == 1)
-            {
-                MessageBox.Show(this,
-                    "Word document generation is no more available because we removed usage of commercial document generation product. As a workaround, please generate an Excel file and copy/paste result in your Word Document\r\n\r\nIf you are a developer and have skills on Word document generation, please contact us through XrmToolBox Github repository",
-                    "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                cbbOutputType.SelectedIndex = 0;
-                return;
-            }
-
             txtOutputFilePath.Text = string.Empty;
         }
 
@@ -540,11 +531,15 @@ namespace MsCrmTools.MetadataDocumentGenerator
                         docGenerator.Settings = settings;
                         docGenerator.Generate(Service);
                     }
-                    //else
-                    //{
-                    //    // Depecrated
-                    //    //docGenerator = new WordDocumentDocX();
-                    //}
+                    else
+                    {
+                        // Depecrated
+                        docGenerator = new WordDocumentOpenXml(); //WordDocumentDocX();
+                        docGenerator.Worker = bw;
+                        docGenerator.Settings = settings;
+                        docGenerator.Generate(Service);
+
+                    }
                 },
                 PostWorkCallBack = evt =>
                 {
