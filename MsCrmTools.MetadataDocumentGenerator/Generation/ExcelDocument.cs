@@ -99,17 +99,17 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
             }
             lineNumber++;
 
-            sheet.Cells[lineNumber, y].Value = (amd.LogicalName);
+            sheet.Cells[lineNumber, y].Value = amd.LogicalName;
             y++;
 
-            sheet.Cells[lineNumber, y].Value = (amd.SchemaName);
+            sheet.Cells[lineNumber, y].Value = amd.SchemaName;
             y++;
 
             var amdDisplayName = amd.DisplayName.LocalizedLabels.FirstOrDefault(l => l.LanguageCode == settings.DisplayNamesLangugageCode);
-            sheet.Cells[lineNumber, y].Value = (amd.DisplayName.LocalizedLabels.Count == 0 ? "N/A" : amdDisplayName != null ? amdDisplayName.Label : "");
+            sheet.Cells[lineNumber, y].Value = amd.DisplayName.LocalizedLabels.Count == 0 ? "N/A" : amdDisplayName != null ? amdDisplayName.Label : "";
             y++;
 
-            if (amd.AttributeType != null) sheet.Cells[lineNumber, y].Value = (amd.AttributeType.Value.ToString());
+            if (amd.AttributeType != null) sheet.Cells[lineNumber, y].Value = amd.AttributeType.Value.ToString();
             if (amd.AttributeType.Value == AttributeTypeCode.Virtual && amd is MultiSelectPicklistAttributeMetadata)
             {
                 sheet.Cells[lineNumber, y].Value = "MultiSelect OptionSet";
@@ -117,33 +117,36 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
             y++;
 
             var amdDescription = amd.Description.LocalizedLabels.FirstOrDefault(l => l.LanguageCode == settings.DisplayNamesLangugageCode);
-            sheet.Cells[lineNumber, y].Value = (amd.Description.LocalizedLabels.Count == 0 ? "N/A" : amdDescription != null ? amdDescription.Label : "");
+            sheet.Cells[lineNumber, y].Value = amd.Description.LocalizedLabels.Count == 0 ? "N/A" : amdDescription != null ? amdDescription.Label : "";
             y++;
 
-            sheet.Cells[lineNumber, y].Value = ((amd.IsCustomAttribute != null && amd.IsCustomAttribute.Value).ToString(CultureInfo.InvariantCulture));
+            sheet.Cells[lineNumber, y].Value = (amd.IsCustomAttribute != null && amd.IsCustomAttribute.Value).ToString(CultureInfo.InvariantCulture);
+            y++;
+
+            sheet.Cells[lineNumber, y].Value = (amd.SourceType ?? 0) == 0 ? "Simple" : (amd.SourceType ?? 0) == 1 ? "Calculated" : "Rollup";
             y++;
 
             if (settings.AddRequiredLevelInformation)
             {
-                sheet.Cells[lineNumber, y].Value = (amd.RequiredLevel.Value.ToString());
+                sheet.Cells[lineNumber, y].Value = amd.RequiredLevel.Value.ToString();
                 y++;
             }
 
             if (settings.AddValidForAdvancedFind)
             {
-                sheet.Cells[lineNumber, y].Value = (amd.IsValidForAdvancedFind.Value.ToString(CultureInfo.InvariantCulture));
+                sheet.Cells[lineNumber, y].Value = amd.IsValidForAdvancedFind.Value.ToString(CultureInfo.InvariantCulture);
                 y++;
             }
 
             if (settings.AddAuditInformation)
             {
-                sheet.Cells[lineNumber, y].Value = (amd.IsAuditEnabled.Value.ToString(CultureInfo.InvariantCulture));
+                sheet.Cells[lineNumber, y].Value = amd.IsAuditEnabled.Value.ToString(CultureInfo.InvariantCulture);
                 y++;
             }
 
             if (settings.AddFieldSecureInformation)
             {
-                sheet.Cells[lineNumber, y].Value = ((amd.IsSecured != null && amd.IsSecured.Value).ToString(CultureInfo.InvariantCulture));
+                sheet.Cells[lineNumber, y].Value = (amd.IsSecured != null && amd.IsSecured.Value).ToString(CultureInfo.InvariantCulture);
                 y++;
             }
 
@@ -241,58 +244,58 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
             sheet.Cells[lineNumber, 2].Value = emd.DisplayName.LocalizedLabels.Count == 0 ? emd.SchemaName : emdDisplayName != null ? emdDisplayName.Label : null;
             lineNumber++;
 
-            sheet.Cells[lineNumber, 1].Value = ("Plural Display Name");
+            sheet.Cells[lineNumber, 1].Value = "Plural Display Name";
             sheet.Cells[lineNumber, 1].Style.Fill.PatternType = ExcelFillStyle.Solid;
             sheet.Cells[lineNumber, 1].Style.Fill.BackgroundColor.SetColor(Color.PowderBlue);
             sheet.Cells[lineNumber, 1].Style.Font.Bold = true;
             var emdDisplayCollectionName = emd.DisplayCollectionName.LocalizedLabels.FirstOrDefault(l => l.LanguageCode == settings.DisplayNamesLangugageCode);
-            sheet.Cells[lineNumber, 2].Value = (emd.DisplayCollectionName.LocalizedLabels.Count == 0 ? "N/A" : emdDisplayCollectionName != null ? emdDisplayCollectionName.Label : null);
+            sheet.Cells[lineNumber, 2].Value = emd.DisplayCollectionName.LocalizedLabels.Count == 0 ? "N/A" : emdDisplayCollectionName != null ? emdDisplayCollectionName.Label : null;
             lineNumber++;
 
-            sheet.Cells[lineNumber, 1].Value = ("Description");
+            sheet.Cells[lineNumber, 1].Value = "Description";
             sheet.Cells[lineNumber, 1].Style.Fill.PatternType = ExcelFillStyle.Solid;
             sheet.Cells[lineNumber, 1].Style.Fill.BackgroundColor.SetColor(Color.PowderBlue);
             sheet.Cells[lineNumber, 1].Style.Font.Bold = true;
             var emdDescription = emd.Description.LocalizedLabels.FirstOrDefault(l => l.LanguageCode == settings.DisplayNamesLangugageCode);
-            sheet.Cells[lineNumber, 2].Value = (emd.Description.LocalizedLabels.Count == 0 ? "N/A" : emdDescription != null ? emdDescription.Label : null);
+            sheet.Cells[lineNumber, 2].Value = emd.Description.LocalizedLabels.Count == 0 ? "N/A" : emdDescription != null ? emdDescription.Label : null;
             lineNumber++;
 
-            sheet.Cells[lineNumber, 1].Value = ("Schema Name");
+            sheet.Cells[lineNumber, 1].Value = "Schema Name";
             sheet.Cells[lineNumber, 1].Style.Fill.PatternType = ExcelFillStyle.Solid;
             sheet.Cells[lineNumber, 1].Style.Fill.PatternType = ExcelFillStyle.Solid;
             sheet.Cells[lineNumber, 1].Style.Fill.BackgroundColor.SetColor(Color.PowderBlue);
             sheet.Cells[lineNumber, 1].Style.Font.Bold = true;
-            sheet.Cells[lineNumber, 2].Value = (emd.SchemaName);
+            sheet.Cells[lineNumber, 2].Value = emd.SchemaName;
             lineNumber++;
 
-            sheet.Cells[lineNumber, 1].Value = ("Logical Name");
+            sheet.Cells[lineNumber, 1].Value = "Logical Name";
             sheet.Cells[lineNumber, 1].Style.Fill.PatternType = ExcelFillStyle.Solid;
             sheet.Cells[lineNumber, 1].Style.Fill.BackgroundColor.SetColor(Color.PowderBlue);
             sheet.Cells[lineNumber, 1].Style.Font.Bold = true;
-            sheet.Cells[lineNumber, 2].Value = (emd.LogicalName);
+            sheet.Cells[lineNumber, 2].Value = emd.LogicalName;
             lineNumber++;
 
-            sheet.Cells[lineNumber, 1].Value = ("Object Type Code");
+            sheet.Cells[lineNumber, 1].Value = "Object Type Code";
             sheet.Cells[lineNumber, 1].Style.Fill.PatternType = ExcelFillStyle.Solid;
             sheet.Cells[lineNumber, 1].Style.Fill.BackgroundColor.SetColor(Color.PowderBlue);
             sheet.Cells[lineNumber, 1].Style.Font.Bold = true;
             sheet.Cells[lineNumber, 2].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
-            if (emd.ObjectTypeCode != null) sheet.Cells[lineNumber, 1].Value = (emd.ObjectTypeCode.Value);
+            if (emd.ObjectTypeCode != null) sheet.Cells[lineNumber, 1].Value = emd.ObjectTypeCode.Value;
             lineNumber++;
 
-            sheet.Cells[lineNumber, 1].Value = ("Is Custom Entity");
+            sheet.Cells[lineNumber, 1].Value = "Is Custom Entity";
             sheet.Cells[lineNumber, 1].Style.Fill.PatternType = ExcelFillStyle.Solid;
             sheet.Cells[lineNumber, 1].Style.Fill.BackgroundColor.SetColor(Color.PowderBlue);
             sheet.Cells[lineNumber, 1].Style.Font.Bold = true;
-            sheet.Cells[lineNumber, 2].Value = (emd.IsCustomEntity != null && emd.IsCustomEntity.Value);
+            sheet.Cells[lineNumber, 2].Value = emd.IsCustomEntity != null && emd.IsCustomEntity.Value;
             sheet.Cells[lineNumber, 2].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
             lineNumber++;
 
-            sheet.Cells[lineNumber, 1].Value = ("Ownership Type");
+            sheet.Cells[lineNumber, 1].Value = "Ownership Type";
             sheet.Cells[lineNumber, 1].Style.Fill.PatternType = ExcelFillStyle.Solid;
             sheet.Cells[lineNumber, 1].Style.Fill.BackgroundColor.SetColor(Color.PowderBlue);
             sheet.Cells[lineNumber, 1].Style.Font.Bold = true;
-            if (emd.OwnershipType != null) sheet.Cells[lineNumber, 2].Value = (emd.OwnershipType.Value);
+            if (emd.OwnershipType != null) sheet.Cells[lineNumber, 2].Value = emd.OwnershipType.Value;
             lineNumber++;
             lineNumber++;
         }
@@ -310,30 +313,30 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
             summaryLineNumber++;
 
             var emdDisplayName = emd.DisplayName.LocalizedLabels.FirstOrDefault(l => l.LanguageCode == settings.DisplayNamesLangugageCode);
-            sheet.Cells[summaryLineNumber, y].Value = (emd.DisplayName.LocalizedLabels.Count == 0 ? emd.SchemaName : emdDisplayName != null ? emdDisplayName.Label : null);
+            sheet.Cells[summaryLineNumber, y].Value = emd.DisplayName.LocalizedLabels.Count == 0 ? emd.SchemaName : emdDisplayName != null ? emdDisplayName.Label : null;
             y++;
 
             var emdDisplayCollectionName = emd.DisplayCollectionName.LocalizedLabels.FirstOrDefault(l => l.LanguageCode == settings.DisplayNamesLangugageCode);
-            sheet.Cells[summaryLineNumber, y].Value = (emd.DisplayCollectionName.LocalizedLabels.Count == 0 ? "N/A" : emdDisplayCollectionName != null ? emdDisplayCollectionName.Label : null);
+            sheet.Cells[summaryLineNumber, y].Value = emd.DisplayCollectionName.LocalizedLabels.Count == 0 ? "N/A" : emdDisplayCollectionName != null ? emdDisplayCollectionName.Label : null;
             y++;
 
             var emdDescription = emd.Description.LocalizedLabels.FirstOrDefault(l => l.LanguageCode == settings.DisplayNamesLangugageCode);
-            sheet.Cells[summaryLineNumber, y].Value = (emd.Description.LocalizedLabels.Count == 0 ? "N/A" : emdDescription != null ? emdDescription.Label : null);
+            sheet.Cells[summaryLineNumber, y].Value = emd.Description.LocalizedLabels.Count == 0 ? "N/A" : emdDescription != null ? emdDescription.Label : null;
             y++;
 
-            sheet.Cells[summaryLineNumber, y].Value = (emd.SchemaName);
+            sheet.Cells[summaryLineNumber, y].Value = emd.SchemaName;
             y++;
 
-            sheet.Cells[summaryLineNumber, y].Value = (emd.LogicalName);
+            sheet.Cells[summaryLineNumber, y].Value = emd.LogicalName;
             y++;
 
-            if (emd.ObjectTypeCode != null) sheet.Cells[summaryLineNumber, y].Value = (emd.ObjectTypeCode.Value);
+            if (emd.ObjectTypeCode != null) sheet.Cells[summaryLineNumber, y].Value = emd.ObjectTypeCode.Value;
             y++;
 
-            sheet.Cells[summaryLineNumber, y].Value = (emd.IsCustomEntity != null && emd.IsCustomEntity.Value);
+            sheet.Cells[summaryLineNumber, y].Value = emd.IsCustomEntity != null && emd.IsCustomEntity.Value;
             y++;
 
-            if (emd.OwnershipType != null) sheet.Cells[summaryLineNumber, y].Value = (emd.OwnershipType.Value);
+            if (emd.OwnershipType != null) sheet.Cells[summaryLineNumber, y].Value = emd.OwnershipType.Value;
         }
 
         /// <summary>
@@ -358,9 +361,9 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
                     name = string.Format("{0} ({1})",
                         remainingLength == 0
                             ? "..."
-                            : (displayName.Length > remainingLength
+                            : displayName.Length > remainingLength
                                 ? displayName.Substring(0, remainingLength)
-                                : displayName),
+                                : displayName,
                         logicalName);
                 }
             }
@@ -610,10 +613,10 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
                         {
                             var bamd = (BigIntAttributeMetadata)amd;
 
-                            sheet.Cells[x, y].Value = (string.Format(
+                            sheet.Cells[x, y].Value = string.Format(
                                 "Minimum value: {0}\r\nMaximum value: {1}",
                                 bamd.MinValue.HasValue ? bamd.MinValue.Value.ToString(CultureInfo.InvariantCulture) : "N/A",
-                                bamd.MaxValue.HasValue ? bamd.MaxValue.Value.ToString(CultureInfo.InvariantCulture) : "N/A"));
+                                bamd.MaxValue.HasValue ? bamd.MaxValue.Value.ToString(CultureInfo.InvariantCulture) : "N/A");
                         }
                         break;
 
@@ -624,11 +627,11 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
                             var bamdOptionSetTrue = bamd.OptionSet.TrueOption.Label.LocalizedLabels.FirstOrDefault(l => l.LanguageCode == settings.DisplayNamesLangugageCode);
                             var bamdOptionSetFalse = bamd.OptionSet.FalseOption.Label.LocalizedLabels.FirstOrDefault(l => l.LanguageCode == settings.DisplayNamesLangugageCode);
 
-                            sheet.Cells[x, y].Value = (string.Format(
+                            sheet.Cells[x, y].Value = string.Format(
                                 "True: {0}\r\nFalse: {1}\r\nDefault Value: {2}",
                                 bamdOptionSetTrue != null ? bamdOptionSetTrue.Label : "",
                                 bamdOptionSetFalse != null ? bamdOptionSetFalse.Label : "",
-                                bamd.DefaultValue.HasValue ? bamd.DefaultValue.Value.ToString(CultureInfo.InvariantCulture) : "N/A"));
+                                bamd.DefaultValue.HasValue ? bamd.DefaultValue.Value.ToString(CultureInfo.InvariantCulture) : "N/A");
                         }
                         break;
 
@@ -636,9 +639,9 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
                         {
                             var damd = (DateTimeAttributeMetadata)amd;
 
-                            sheet.Cells[x, y].Value = (string.Format(
+                            sheet.Cells[x, y].Value = string.Format(
                                 "Format: {0}",
-                                damd.Format.HasValue ? damd.Format.Value.ToString() : "N/A"));
+                                damd.Format.HasValue ? damd.Format.Value.ToString() : "N/A");
                         }
                         break;
 
@@ -646,11 +649,11 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
                         {
                             var damd = (DecimalAttributeMetadata)amd;
 
-                            sheet.Cells[x, y].Value = (string.Format(
+                            sheet.Cells[x, y].Value = string.Format(
                                 "Minimum value: {0}\r\nMaximum value: {1}\r\nPrecision: {2}",
                                 damd.MinValue.HasValue ? damd.MinValue.Value.ToString(CultureInfo.InvariantCulture) : "N/A",
                                 damd.MaxValue.HasValue ? damd.MaxValue.Value.ToString(CultureInfo.InvariantCulture) : "N/A",
-                                damd.Precision.HasValue ? damd.Precision.Value.ToString(CultureInfo.InvariantCulture) : "N/A"));
+                                damd.Precision.HasValue ? damd.Precision.Value.ToString(CultureInfo.InvariantCulture) : "N/A");
                         }
                         break;
 
@@ -658,11 +661,11 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
                         {
                             var damd = (DoubleAttributeMetadata)amd;
 
-                            sheet.Cells[x, y].Value = (string.Format(
+                            sheet.Cells[x, y].Value = string.Format(
                                 "Minimum value: {0}\r\nMaximum value: {1}\r\nPrecision: {2}",
                                 damd.MinValue.HasValue ? damd.MinValue.Value.ToString(CultureInfo.InvariantCulture) : "N/A",
                                 damd.MaxValue.HasValue ? damd.MaxValue.Value.ToString(CultureInfo.InvariantCulture) : "N/A",
-                                damd.Precision.HasValue ? damd.Precision.Value.ToString(CultureInfo.InvariantCulture) : "N/A"));
+                                damd.Precision.HasValue ? damd.Precision.Value.ToString(CultureInfo.InvariantCulture) : "N/A");
                         }
                         break;
 
@@ -676,10 +679,10 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
                         {
                             var iamd = (IntegerAttributeMetadata)amd;
 
-                            sheet.Cells[x, y].Value = (string.Format(
+                            sheet.Cells[x, y].Value = string.Format(
                                 "Minimum value: {0}\r\nMaximum value: {1}",
                                 iamd.MinValue.HasValue ? iamd.MinValue.Value.ToString(CultureInfo.InvariantCulture) : "N/A",
-                                iamd.MaxValue.HasValue ? iamd.MaxValue.Value.ToString(CultureInfo.InvariantCulture) : "N/A"));
+                                iamd.MaxValue.HasValue ? iamd.MaxValue.Value.ToString(CultureInfo.InvariantCulture) : "N/A");
                         }
                         break;
 
@@ -689,9 +692,9 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
                         {
                             var lamd = (LookupAttributeMetadata)amd;
 
-                            var format = lamd.Targets.Aggregate("Targets:", (current, entity) => current + ("\r\n" + entity));
+                            var format = lamd.Targets.Aggregate("Targets:", (current, entity) => current + "\r\n" + entity);
 
-                            sheet.Cells[x, y].Value = (format);
+                            sheet.Cells[x, y].Value = format;
                         }
                         break;
 
@@ -699,10 +702,10 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
                         {
                             var mamd = (MemoAttributeMetadata)amd;
 
-                            sheet.Cells[x, y].Value = (string.Format(
+                            sheet.Cells[x, y].Value = string.Format(
                                 "Format: {0}\r\nMax length: {1}",
                                 mamd.Format.HasValue ? mamd.Format.Value.ToString() : "N/A",
-                                mamd.MaxLength.HasValue ? mamd.MaxLength.Value.ToString(CultureInfo.InvariantCulture) : "N/A"));
+                                mamd.MaxLength.HasValue ? mamd.MaxLength.Value.ToString(CultureInfo.InvariantCulture) : "N/A");
                         }
                         break;
 
@@ -710,11 +713,11 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
                         {
                             var mamd = (MoneyAttributeMetadata)amd;
 
-                            sheet.Cells[x, y].Value = (string.Format(
+                            sheet.Cells[x, y].Value = string.Format(
                                 "Minimum value: {0}\r\nMaximum value: {1}\r\nPrecision: {2}",
                                 mamd.MinValue.HasValue ? mamd.MinValue.Value.ToString(CultureInfo.InvariantCulture) : "N/A",
                                 mamd.MaxValue.HasValue ? mamd.MaxValue.Value.ToString(CultureInfo.InvariantCulture) : "N/A",
-                                mamd.Precision.HasValue ? mamd.Precision.Value.ToString(CultureInfo.InvariantCulture) : "N/A"));
+                                mamd.Precision.HasValue ? mamd.Precision.Value.ToString(CultureInfo.InvariantCulture) : "N/A");
                         }
                         break;
 
@@ -746,7 +749,7 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
                             format +=
                                 $"\r\nDefault: {(defaultValue.HasValue && defaultValue != -1 ? defaultValue.Value.ToString(CultureInfo.InvariantCulture) : "N/A")}";
 
-                            sheet.Cells[x, y].Value = (format);
+                            sheet.Cells[x, y].Value = format;
                         }
 
                         break;
@@ -774,7 +777,7 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
 
                             format += string.Format("\r\nDefault: {0}", defaultValue.HasValue && defaultValue != -1 ? defaultValue.Value.ToString(CultureInfo.InvariantCulture) : "N/A");
 
-                            sheet.Cells[x, y].Value = (format);
+                            sheet.Cells[x, y].Value = format;
                         }
                         break;
 
@@ -792,7 +795,7 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
                                                         omdLocLabel != null ? omdLocLabel.Label : "");
                             }
 
-                            sheet.Cells[x, y].Value = (format);
+                            sheet.Cells[x, y].Value = format;
                         }
                         break;
 
@@ -810,7 +813,7 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
                                                         omdLocLabel != null ? omdLocLabel.Label : "");
                             }
 
-                            sheet.Cells[x, y].Value = (format);
+                            sheet.Cells[x, y].Value = format;
                         }
                         break;
 
@@ -819,23 +822,23 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
                             var samd = amd as StringAttributeMetadata;
                             if (samd != null)
                             {
-                                sheet.Cells[x, y].Value = (string.Format(
+                                sheet.Cells[x, y].Value = string.Format(
                                     "Format: {0}\r\nMax length: {1}",
                                     samd.Format.HasValue ? samd.Format.Value.ToString() : "N/A",
                                     samd.MaxLength.HasValue
                                         ? samd.MaxLength.Value.ToString(CultureInfo.InvariantCulture)
-                                        : "N/A"));
+                                        : "N/A");
                             }
 
                             var mamd = amd as MemoAttributeMetadata;
                             if (mamd != null)
                             {
-                                sheet.Cells[x, y].Value = (string.Format(
+                                sheet.Cells[x, y].Value = string.Format(
                                     "Format: {0}\r\nMax length: {1}",
                                     mamd.Format.HasValue ? mamd.Format.Value.ToString() : "N/A",
                                     mamd.MaxLength.HasValue
                                         ? mamd.MaxLength.Value.ToString(CultureInfo.InvariantCulture)
-                                        : "N/A"));
+                                        : "N/A");
                             }
                         }
                         break;
@@ -857,55 +860,58 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
         private void InsertAttributeHeader(ExcelWorksheet sheet, int x, int y)
         {
             // Write the header
-            sheet.Cells[x, y].Value = ("Logical Name");
+            sheet.Cells[x, y].Value = "Logical Name";
             y++;
 
-            sheet.Cells[x, y].Value = ("Schema Name");
+            sheet.Cells[x, y].Value = "Schema Name";
             y++;
 
-            sheet.Cells[x, y].Value = ("Display Name");
+            sheet.Cells[x, y].Value = "Display Name";
             y++;
 
-            sheet.Cells[x, y].Value = ("Type");
+            sheet.Cells[x, y].Value = "Attribute Type";
             y++;
 
-            sheet.Cells[x, y].Value = ("Description");
+            sheet.Cells[x, y].Value = "Description";
             y++;
 
-            sheet.Cells[x, y].Value = ("Custom Attribute");
+            sheet.Cells[x, y].Value = "Custom Attribute";
+            y++;
+
+            sheet.Cells[x, y].Value = "Type";
             y++;
 
             if (settings.AddRequiredLevelInformation)
             {
-                sheet.Cells[x, y].Value = ("Required Level");
+                sheet.Cells[x, y].Value = "Required Level";
                 y++;
             }
 
             if (settings.AddValidForAdvancedFind)
             {
-                sheet.Cells[x, y].Value = ("ValidFor AdvancedFind");
+                sheet.Cells[x, y].Value = "ValidFor AdvancedFind";
                 y++;
             }
 
             if (settings.AddAuditInformation)
             {
-                sheet.Cells[x, y].Value = ("Audit Enabled");
+                sheet.Cells[x, y].Value = "Audit Enabled";
                 y++;
             }
 
             if (settings.AddFieldSecureInformation)
             {
-                sheet.Cells[x, y].Value = ("Secured");
+                sheet.Cells[x, y].Value = "Secured";
                 y++;
             }
 
             if (settings.AddFormLocation)
             {
-                sheet.Cells[x, y].Value = ("Form location");
+                sheet.Cells[x, y].Value = "Form location";
                 y++;
             }
 
-            sheet.Cells[x, y].Value = ("Additional data");
+            sheet.Cells[x, y].Value = "Additional data";
             y++;
 
             for (int i = 1; i <= y + 1; i++)
@@ -928,28 +934,28 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
         private void InsertEntityHeader(ExcelWorksheet sheet, int x, int y)
         {
             // Write the header
-            sheet.Cells[x, y].Value = ("Entity");
+            sheet.Cells[x, y].Value = "Entity";
             y++;
 
-            sheet.Cells[x, y].Value = ("Plural Display Name");
+            sheet.Cells[x, y].Value = "Plural Display Name";
             y++;
 
-            sheet.Cells[x, y].Value = ("Description");
+            sheet.Cells[x, y].Value = "Description";
             y++;
 
-            sheet.Cells[x, y].Value = ("Schema Name");
+            sheet.Cells[x, y].Value = "Schema Name";
             y++;
 
-            sheet.Cells[x, y].Value = ("Logical Name");
+            sheet.Cells[x, y].Value = "Logical Name";
             y++;
 
-            sheet.Cells[x, y].Value = ("Object Type Code");
+            sheet.Cells[x, y].Value = "Object Type Code";
             y++;
 
-            sheet.Cells[x, y].Value = ("Is Custom Entity");
+            sheet.Cells[x, y].Value = "Is Custom Entity";
             y++;
 
-            sheet.Cells[x, y].Value = ("Ownership Type");
+            sheet.Cells[x, y].Value = "Ownership Type";
             y++;
 
             for (int i = 1; i < y; i++)

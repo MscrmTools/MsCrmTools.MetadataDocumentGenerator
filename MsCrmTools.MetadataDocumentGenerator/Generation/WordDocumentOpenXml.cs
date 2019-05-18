@@ -83,9 +83,10 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
                                  "Logical Name",
                                  "Schema Name",
                                  "Display Name",
-                                 "Type",
+                                 "Attribute Type",
                                  "Description",
-                                 "Is Custom"
+                                 "Is Custom",
+                                 "Type"
                              };
 
             var amds = attributeMetadataList.OrderBy(attr => attr.SchemaName).Distinct(new AttributeMetadataComparer());
@@ -109,16 +110,21 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
                 var description = descriptionLabel != null ? descriptionLabel.Label : "Not Translated";
 
                 var metadata = new List<string>
-                                   {
-                                       amd.LogicalName,
-                                       amd.SchemaName,
-                                       displayName,
-                                       amd.AttributeType != null ? amd.AttributeType.HasValue && amd.AttributeType == AttributeTypeCode.Virtual  && amd is MultiSelectPicklistAttributeMetadata ? "MutliSelect OptionSet": amd.AttributeType.HasValue ? amd.AttributeType.Value.ToString() : string.Empty: string.Empty,
-                                       description,
-                                       amd.IsCustomAttribute != null
-                                           ? amd.IsCustomAttribute.Value.ToString(CultureInfo.InvariantCulture)
-                                           : string.Empty
-                                   };
+                {
+                    amd.LogicalName,
+                    amd.SchemaName,
+                    displayName,
+                    amd.AttributeType != null
+                        ? amd.AttributeType.HasValue && amd.AttributeType == AttributeTypeCode.Virtual &&
+                          amd is MultiSelectPicklistAttributeMetadata ? "MutliSelect OptionSet" :
+                        amd.AttributeType.HasValue ? amd.AttributeType.Value.ToString() : string.Empty
+                        : string.Empty,
+                    description,
+                    amd.IsCustomAttribute != null
+                        ? amd.IsCustomAttribute.Value.ToString(CultureInfo.InvariantCulture)
+                        : string.Empty,
+                    (amd.SourceType ?? 0) == 0 ? "Simple" : (amd.SourceType ?? 0) == 1 ? "Calculated" : "Rollup"
+                };
 
                 if (_settings.AddRequiredLevelInformation)
                 {
