@@ -475,6 +475,7 @@ namespace MsCrmTools.MetadataDocumentGenerator
             settings.AddRequiredLevelInformation = chkAddRequiredLevel.Checked;
             settings.AddValidForAdvancedFind = chkAddValidForAf.Checked;
             settings.AddFormLocation = chkAddFormLocation.Checked;
+            settings.GenerateOnlyOneTable = chkOneSheet.Checked;
 
             settings.DisplayNamesLangugageCode = ((LanguageCode)cbbLcid.SelectedItem).Lcid;
             settings.FilePath = txtOutputFilePath.Text;
@@ -538,7 +539,6 @@ namespace MsCrmTools.MetadataDocumentGenerator
                         docGenerator.Worker = bw;
                         docGenerator.Settings = settings;
                         docGenerator.Generate(Service);
-
                     }
                 },
                 PostWorkCallBack = evt =>

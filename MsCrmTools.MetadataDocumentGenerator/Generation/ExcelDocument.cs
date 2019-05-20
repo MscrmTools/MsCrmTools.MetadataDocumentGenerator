@@ -39,7 +39,7 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
         /// <summary>
         /// Line number where to write
         /// </summary>
-        private int lineNumber;
+        private int lineNumber = 1;
 
         /// <summary>
         /// Generation Settings
@@ -98,6 +98,16 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
                 attributesHeaderAdded = true;
             }
             lineNumber++;
+
+            if (settings.GenerateOnlyOneTable)
+            {
+                sheet.Cells[lineNumber, y].Value = emdCache.First(e => e.LogicalName == amd.EntityLogicalName)
+                                                       .DisplayName?.UserLocalizedLabel?.Label ?? "N/A";
+                y++;
+
+                sheet.Cells[lineNumber, y].Value = amd.EntityLogicalName;
+                y++;
+            }
 
             sheet.Cells[lineNumber, y].Value = amd.LogicalName;
             y++;
@@ -411,6 +421,7 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
             }
             int totalEntities = settings.EntitiesToProceed.Count;
             int processed = 0;
+            ExcelWorksheet sheet = AddWorkSheet("Metadata");
 
             foreach (var entity in settings.EntitiesToProceed.OrderBy(e => e.Name))
             {
@@ -435,15 +446,17 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
                     AddEntityMetadataInLine(emd, summarySheet);
                 }
 
-                lineNumber = 1;
+                if (!settings.GenerateOnlyOneTable)
+                    lineNumber = 1;
 
                 var emdDisplayNameLabel = emd.DisplayName.LocalizedLabels.FirstOrDefault(l => l.LanguageCode == settings.DisplayNamesLangugageCode);
-
-                var sheet = AddWorkSheet(emdDisplayNameLabel == null ? "N/A" : emdDisplayNameLabel.Label, emd.SchemaName);
-
-                if (!settings.AddEntitiesSummary)
+                if (!settings.GenerateOnlyOneTable)
                 {
-                    AddEntityMetadata(emd, sheet);
+                    sheet = AddWorkSheet(emdDisplayNameLabel == null ? "N/A" : emdDisplayNameLabel.Label, emd.SchemaName);
+                    if (!settings.AddEntitiesSummary)
+                    {
+                        AddEntityMetadata(emd, sheet);
+                    }
                 }
 
                 if (settings.AddFormLocation)
@@ -465,7 +478,8 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
                                 x => x.AttributeType != null && (x.AttributeType.Value == AttributeTypeCode.Boolean
                                                                  || x.AttributeType.Value == AttributeTypeCode.Picklist
                                                                  || x.AttributeType.Value == AttributeTypeCode.State
-                                                                 || x.AttributeType.Value == AttributeTypeCode.Status)).ToList();
+                                                                 || x.AttributeType.Value == AttributeTypeCode.Status
+                                                                 || x.AttributeType == AttributeTypeCode.Virtual && x is MultiSelectPicklistAttributeMetadata)).ToList();
                         break;
 
                     case AttributeSelectionOption.AttributeManualySelected:
@@ -559,7 +573,7 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
 
                 if (amds.Any())
                 {
-                    foreach (var amd in amds.Distinct(new AttributeMetadataComparer()).OrderBy(a => a.LogicalName))
+                    foreach (var amd in amds.Distinct(new AttributeMetadataComparer()).OrderBy(a => a.EntityLogicalName).ThenBy(a => a.LogicalName))
                     {
                         AddAttribute(emd.Attributes.FirstOrDefault(x => x.LogicalName == amd.LogicalName), sheet);
                     }
@@ -577,6 +591,11 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
             if (settings.AddEntitiesSummary)
             {
                 summarySheet.Cells[summarySheet.Dimension.Address].AutoFitColumns();
+            }
+
+            if (!settings.GenerateOnlyOneTable)
+            {
+                innerWorkBook.Workbook.Worksheets.Delete("Metadata");
             }
 
             SaveDocument(settings.FilePath);
@@ -860,6 +879,14 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
         private void InsertAttributeHeader(ExcelWorksheet sheet, int x, int y)
         {
             // Write the header
+            if (settings.GenerateOnlyOneTable)
+            {
+                sheet.Cells[x, y].Value = "Entity Display Name";
+                y++;
+                sheet.Cells[x, y].Value = "Entity Logical Name";
+                y++;
+            }
+
             sheet.Cells[x, y].Value = "Logical Name";
             y++;
 

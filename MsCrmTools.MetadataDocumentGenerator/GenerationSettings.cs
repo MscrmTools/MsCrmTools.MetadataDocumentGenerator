@@ -76,6 +76,7 @@ namespace MsCrmTools.MetadataDocumentGenerator
 
         public string FilePath { get; set; }
 
+        public bool GenerateOnlyOneTable { get; set; }
         public bool IncludeOnlyAttributesOnForms { get; set; }
         public Output OutputDocumentType { get; set; }
 

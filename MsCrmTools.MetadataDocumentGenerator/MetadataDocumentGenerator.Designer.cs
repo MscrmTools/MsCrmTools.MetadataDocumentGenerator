@@ -48,6 +48,7 @@
             this.chkAddValidForAf = new System.Windows.Forms.CheckBox();
             this.chkAddRequiredLevel = new System.Windows.Forms.CheckBox();
             this.chkAddFls = new System.Windows.Forms.CheckBox();
+            this.chkOneSheet = new System.Windows.Forms.CheckBox();
             this.chkAddAudit = new System.Windows.Forms.CheckBox();
             this.gbAttributeSelection = new System.Windows.Forms.GroupBox();
             this.chkFilterByPrefix = new System.Windows.Forms.CheckBox();
@@ -201,12 +202,13 @@
             this.gbOptions.Controls.Add(this.chkAddRequiredLevel);
             this.gbOptions.Controls.Add(this.chkAddFls);
             this.gbOptions.Controls.Add(this.chkAddAudit);
+            this.gbOptions.Controls.Add(this.chkOneSheet);
             this.gbOptions.Enabled = false;
             this.gbOptions.Location = new System.Drawing.Point(4, 689);
             this.gbOptions.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.gbOptions.Name = "gbOptions";
             this.gbOptions.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.gbOptions.Size = new System.Drawing.Size(1358, 154);
+            this.gbOptions.Size = new System.Drawing.Size(1358, 200);
             this.gbOptions.TabIndex = 8;
             this.gbOptions.TabStop = false;
             this.gbOptions.Text = "Options";
@@ -266,6 +268,18 @@
             this.chkAddFls.TabIndex = 1;
             this.chkAddFls.Text = "Include Field Level Security information";
             this.chkAddFls.UseVisualStyleBackColor = true;
+
+            // 
+            // chkOneSheet
+            // 
+            this.chkOneSheet.AutoSize = true;
+            this.chkOneSheet.Location = new System.Drawing.Point(9, 140);
+            this.chkOneSheet.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.chkOneSheet.Name = "chkOneSheet";
+            this.chkOneSheet.Size = new System.Drawing.Size(310, 24);
+            this.chkOneSheet.TabIndex = 1;
+            this.chkOneSheet.Text = "Export all attributes in one sheet (Excel only)";
+            this.chkOneSheet.UseVisualStyleBackColor = true;
             // 
             // chkAddAudit
             // 
@@ -653,6 +667,7 @@
         private System.Windows.Forms.CheckBox chkAddValidForAf;
         private System.Windows.Forms.CheckBox chkAddRequiredLevel;
         private System.Windows.Forms.CheckBox chkAddFls;
+        private System.Windows.Forms.CheckBox chkOneSheet;
         private System.Windows.Forms.CheckBox chkAddAudit;
         private System.Windows.Forms.CheckBox chkAddFormLocation;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;

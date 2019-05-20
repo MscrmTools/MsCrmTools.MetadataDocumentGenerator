@@ -337,7 +337,9 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
                                     x => x.AttributeType != null && (x.AttributeType.Value == AttributeTypeCode.Boolean
                                                                      || x.AttributeType.Value == AttributeTypeCode.Picklist
                                                                      || x.AttributeType.Value == AttributeTypeCode.State
-                                                                     || x.AttributeType.Value == AttributeTypeCode.Status)).ToList();
+                                                                     || x.AttributeType.Value == AttributeTypeCode.Status
+                                                                     || x.AttributeType == AttributeTypeCode.Virtual && x is MultiSelectPicklistAttributeMetadata)).ToList();
+
                             break;
 
                         case AttributeSelectionOption.AttributeManualySelected:
