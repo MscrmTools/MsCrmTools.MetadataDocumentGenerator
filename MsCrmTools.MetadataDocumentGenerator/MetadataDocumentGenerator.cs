@@ -48,21 +48,33 @@ namespace MsCrmTools.MetadataDocumentGenerator
 
         #region Methods
 
-        private void LoadEntitiesAndLanguages()
+        public void LoadEntities(bool fromSolution = false)
         {
+            List<Entity> solutions = new List<Entity>();
+
+            if (fromSolution)
+            {
+                var dialog = new SolutionPicker(Service);
+                if (dialog.ShowDialog(this) != DialogResult.OK)
+                {
+                    return;
+                }
+
+                solutions.AddRange(dialog.SelectedSolutions);
+            }
+
             lvEntities.Items.Clear();
             cbbLcid.Items.Clear();
 
             WorkAsync(new WorkAsyncInfo
             {
-                Message = "Retrieving entities...",
+                Message = "Loading Entities...",
                 Work = (bw, e) =>
                 {
                     emdCache = new List<EntityMetadata>();
 
-                    var response = (RetrieveAllEntitiesResponse)Service.Execute(new RetrieveAllEntitiesRequest());
-
-                    foreach (var emd in response.EntityMetadata)
+                    // Search for all entities metadata
+                    foreach (var emd in MetadataHelper.GetEntities(solutions, Service))
                     {
                         emdCache.Add(emd);
                     }
@@ -81,8 +93,8 @@ namespace MsCrmTools.MetadataDocumentGenerator
                     foreach (var emd in emdCache)
                     {
                         var displayName = emd.DisplayName != null && emd.DisplayName.UserLocalizedLabel != null
-                                              ? emd.DisplayName.UserLocalizedLabel.Label
-                                              : "N/A";
+                            ? emd.DisplayName.UserLocalizedLabel.Label
+                            : "N/A";
                         var name = emd.LogicalName;
 
                         lvEntities.Items.Add(new ListViewItem
@@ -118,22 +130,20 @@ namespace MsCrmTools.MetadataDocumentGenerator
             gbAttributeSelection.Enabled = !isWorking;
             gbOptions.Enabled = !isWorking;
 
-            tsbConnect.Enabled = !isWorking;
+            tssbLoadEntities.Enabled = !isWorking;
             tsbGenerate.Enabled = !isWorking;
 
             settingsToolStripDropDownButton.Enabled = !isWorking;
         }
 
-        private void TsbCloseClick(object sender, EventArgs e)
+        private void tsmiLoadEntitiesFromSolution_Click(object sender, EventArgs e)
         {
-            CloseTool();
+            ExecuteMethod(LoadEntities, true);
         }
 
-        private void TsbConnectClick(object sender, EventArgs e)
+        private void tssbLoadEntities_ButtonClick(object sender, EventArgs e)
         {
-            SetWorkingState(true);
-
-            ExecuteMethod(LoadEntitiesAndLanguages);
+            ExecuteMethod(LoadEntities, false);
         }
 
         #endregion Methods

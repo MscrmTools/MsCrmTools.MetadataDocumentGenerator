@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Messages;
 using Microsoft.Xrm.Sdk.Metadata;
+using Microsoft.Xrm.Sdk.Metadata.Query;
 using Microsoft.Xrm.Sdk.Query;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,60 @@ namespace MsCrmTools.MetadataDocumentGenerator.Helper
     /// </summary>
     internal class MetadataHelper
     {
+        public static List<EntityMetadata> GetEntities(List<Entity> solutions, IOrganizationService service)
+        {
+            var list = new List<Guid>();
+
+            if (solutions.Count > 0)
+            {
+                var components = service.RetrieveMultiple(new QueryExpression("solutioncomponent")
+                {
+                    ColumnSet = new ColumnSet("objectid"),
+                    NoLock = true,
+                    Criteria = new FilterExpression
+                    {
+                        Conditions =
+                        {
+                            new ConditionExpression("solutionid", ConditionOperator.In,
+                                solutions.Select(s => s.Id).ToArray()),
+                            new ConditionExpression("componenttype", ConditionOperator.Equal, 1)
+                        }
+                    }
+                }).Entities;
+
+                list = components.Select(component => component.GetAttributeValue<Guid>("objectid"))
+                    .ToList();
+            }
+
+            EntityQueryExpression entityQueryExpression = new EntityQueryExpression
+            {
+                Criteria = new MetadataFilterExpression(LogicalOperator.Or),
+                Properties = new MetadataPropertiesExpression
+                {
+                    AllProperties = true
+                }
+            };
+
+            if (list.Count > 0)
+            {
+                list.ForEach(id =>
+                {
+                    entityQueryExpression.Criteria.Conditions.Add(
+                        new MetadataConditionExpression("MetadataId", MetadataConditionOperator.Equals, id));
+                });
+            }
+
+            RetrieveMetadataChangesRequest retrieveMetadataChangesRequest = new RetrieveMetadataChangesRequest
+            {
+                Query = entityQueryExpression,
+                ClientVersionStamp = null
+            };
+
+            var response = (RetrieveMetadataChangesResponse)service.Execute(retrieveMetadataChangesRequest);
+
+            return response.EntityMetadata.ToList();
+        }
+
         /// <summary>
         /// Gets the list of entities metadata (only Entity Items)
         /// </summary>
