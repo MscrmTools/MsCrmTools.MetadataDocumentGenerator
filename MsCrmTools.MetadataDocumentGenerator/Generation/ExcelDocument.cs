@@ -290,7 +290,7 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
             sheet.Cells[lineNumber, 1].Style.Fill.BackgroundColor.SetColor(Color.PowderBlue);
             sheet.Cells[lineNumber, 1].Style.Font.Bold = true;
             sheet.Cells[lineNumber, 2].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
-            if (emd.ObjectTypeCode != null) sheet.Cells[lineNumber, 1].Value = emd.ObjectTypeCode.Value;
+            if (emd.ObjectTypeCode != null) sheet.Cells[lineNumber, 2].Value = emd.ObjectTypeCode.Value;
             lineNumber++;
 
             sheet.Cells[lineNumber, 1].Value = "Is Custom Entity";
