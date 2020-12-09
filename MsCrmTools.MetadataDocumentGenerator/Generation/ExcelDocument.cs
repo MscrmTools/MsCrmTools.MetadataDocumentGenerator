@@ -12,6 +12,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Xml;
+using LicenseContext = OfficeOpenXml.LicenseContext;
 
 namespace MsCrmTools.MetadataDocumentGenerator.Generation
 {
@@ -58,6 +59,8 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
         /// </summary>
         public ExcelDocument()
         {
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
             emdCache = new List<EntityMetadata>();
             innerWorkBook = new ExcelPackage();
             lineNumber = 1;
@@ -642,6 +645,8 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
                     case AttributeTypeCode.Boolean:
                         {
                             var bamd = (BooleanAttributeMetadata)amd;
+
+                            if (bamd.OptionSet.TrueOption == null) return;
 
                             var bamdOptionSetTrue = bamd.OptionSet.TrueOption.Label.LocalizedLabels.FirstOrDefault(l => l.LanguageCode == settings.DisplayNamesLangugageCode);
                             var bamdOptionSetFalse = bamd.OptionSet.FalseOption.Label.LocalizedLabels.FirstOrDefault(l => l.LanguageCode == settings.DisplayNamesLangugageCode);
