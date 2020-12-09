@@ -16,6 +16,7 @@ namespace MsCrmTools.MetadataDocumentGenerator
         AttributesNotOnForm = 2,
         AttributesOptionSet = 3,
         AttributeManualySelected = 4,
+        AttributesUnmanaged = 5
     }
 
     [Flags]

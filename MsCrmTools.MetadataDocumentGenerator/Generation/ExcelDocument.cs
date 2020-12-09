@@ -482,6 +482,10 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
                         amds = emd.Attributes.ToList();
                         break;
 
+                    case AttributeSelectionOption.AttributesUnmanaged:
+                        amds = emd.Attributes.Where(x => x.IsManaged.HasValue && x.IsManaged.Value == false).ToList();
+                        break;
+
                     case AttributeSelectionOption.AttributesOptionSet:
                         amds =
                             emd.Attributes.Where(

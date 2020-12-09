@@ -506,6 +506,7 @@ namespace MsCrmTools.MetadataDocumentGenerator
                     // form definition for entity, then we retrieve forms
                     // again
                     if ((settings.AttributesSelection == AttributeSelectionOption.AllAttributes
+                         || settings.AttributesSelection == AttributeSelectionOption.AttributesUnmanaged
                         || settings.AttributesSelection == AttributeSelectionOption.AttributeManualySelected
                         || settings.AttributesSelection == AttributeSelectionOption.AttributesOptionSet)
                         && settings.AddFormLocation
