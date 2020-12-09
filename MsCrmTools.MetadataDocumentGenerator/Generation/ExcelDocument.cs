@@ -310,7 +310,7 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
             lineNumber++;
         }
 
-        public void AddEntityMetadataInLine(EntityMetadata emd, ExcelWorksheet sheet)
+        public void AddEntityMetadataInLine(EntityMetadata emd, ExcelWorksheet sheet, bool generateOnlyOneTable, string worksheetName)
         {
             var y = 1;
 
@@ -323,7 +323,14 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
             summaryLineNumber++;
 
             var emdDisplayName = emd.DisplayName.LocalizedLabels.FirstOrDefault(l => l.LanguageCode == settings.DisplayNamesLangugageCode);
-            sheet.Cells[summaryLineNumber, y].Value = emd.DisplayName.LocalizedLabels.Count == 0 ? emd.SchemaName : emdDisplayName != null ? emdDisplayName.Label : null;
+            var displayName = emd.DisplayName.LocalizedLabels.Count == 0 ? emd.SchemaName : emdDisplayName != null ? emdDisplayName.Label : null;
+            sheet.Cells[summaryLineNumber, y].Value = displayName;
+            if (!generateOnlyOneTable)
+            {
+                sheet.Cells[summaryLineNumber, y].Style.Font.UnderLine = true;
+                sheet.Cells[summaryLineNumber, y].Style.Font.Color.SetColor(Color.Blue);
+                sheet.Cells[summaryLineNumber, y].Hyperlink = new ExcelHyperLink($"'{worksheetName}'!A1", displayName);
+            }
             y++;
 
             var emdDisplayCollectionName = emd.DisplayCollectionName.LocalizedLabels.FirstOrDefault(l => l.LanguageCode == settings.DisplayNamesLangugageCode);
@@ -441,11 +448,6 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
                     emd = reResponse.EntityMetadata;
                 }
 
-                if (settings.AddEntitiesSummary)
-                {
-                    AddEntityMetadataInLine(emd, summarySheet);
-                }
-
                 if (!settings.GenerateOnlyOneTable)
                     lineNumber = 1;
 
@@ -457,6 +459,11 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
                     {
                         AddEntityMetadata(emd, sheet);
                     }
+                }
+
+                if (settings.AddEntitiesSummary)
+                {
+                    AddEntityMetadataInLine(emd, summarySheet, settings.GenerateOnlyOneTable, sheet.Name);
                 }
 
                 if (settings.AddFormLocation)
