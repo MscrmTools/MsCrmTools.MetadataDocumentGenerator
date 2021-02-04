@@ -592,6 +592,7 @@ namespace MsCrmTools.MetadataDocumentGenerator
             chkAddRequiredLevel.Checked = settings.AddRequiredLevelInformation;
             chkAddValidForAf.Checked = settings.AddValidForAdvancedFind;
             chkDisplayEntityList.Checked = settings.AddEntitiesSummary;
+            chkOneSheet.Checked = settings.GenerateOnlyOneTable;
 
             foreach (ListViewItem item in lvEntities.Items)
             {
@@ -613,6 +614,7 @@ namespace MsCrmTools.MetadataDocumentGenerator
             settings.AddRequiredLevelInformation = chkAddRequiredLevel.Checked;
             settings.AddValidForAdvancedFind = chkAddValidForAf.Checked;
             settings.AddEntitiesSummary = chkDisplayEntityList.Checked;
+            settings.GenerateOnlyOneTable = chkOneSheet.Checked;
 
             settings.SaveToFile();
         }

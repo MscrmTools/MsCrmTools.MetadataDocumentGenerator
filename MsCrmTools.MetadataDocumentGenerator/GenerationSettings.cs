@@ -124,7 +124,8 @@ namespace MsCrmTools.MetadataDocumentGenerator
                 FilePath = FilePath,
                 IncludeOnlyAttributesOnForms = IncludeOnlyAttributesOnForms,
                 AttributesSelection = AttributesSelection,
-                Prefixes = Prefixes
+                Prefixes = Prefixes,
+                GenerateOnlyOneTable = GenerateOnlyOneTable
             };
         }
 
