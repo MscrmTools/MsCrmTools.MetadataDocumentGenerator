@@ -304,6 +304,17 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
             sheet.Cells[lineNumber, 2].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
             lineNumber++;
 
+            if (settings.AddAuditInformation)
+            {
+                sheet.Cells[lineNumber, 1].Value = "Audit Enabled";
+                sheet.Cells[lineNumber, 1].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                sheet.Cells[lineNumber, 1].Style.Fill.BackgroundColor.SetColor(Color.PowderBlue);
+                sheet.Cells[lineNumber, 1].Style.Font.Bold = true;
+                sheet.Cells[lineNumber, 2].Value = emd.IsAuditEnabled != null && emd.IsAuditEnabled.Value;
+                sheet.Cells[lineNumber, 2].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                lineNumber++;
+            }
+
             sheet.Cells[lineNumber, 1].Value = "Ownership Type";
             sheet.Cells[lineNumber, 1].Style.Fill.PatternType = ExcelFillStyle.Solid;
             sheet.Cells[lineNumber, 1].Style.Fill.BackgroundColor.SetColor(Color.PowderBlue);
@@ -355,6 +366,12 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
 
             sheet.Cells[summaryLineNumber, y].Value = emd.IsCustomEntity != null && emd.IsCustomEntity.Value;
             y++;
+
+            if (settings.AddAuditInformation)
+            {
+                if (emd.IsAuditEnabled != null) sheet.Cells[summaryLineNumber, y].Value = emd.IsAuditEnabled.Value;
+                y++;
+            }
 
             if (emd.OwnershipType != null) sheet.Cells[summaryLineNumber, y].Value = emd.OwnershipType.Value;
         }
@@ -997,6 +1014,12 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
 
             sheet.Cells[x, y].Value = "Is Custom Entity";
             y++;
+
+            if (settings.AddAuditInformation)
+            {
+                sheet.Cells[x, y].Value = "Audit Enabled";
+                y++;
+            }
 
             sheet.Cells[x, y].Value = "Ownership Type";
             y++;
