@@ -12,8 +12,10 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 using XrmToolBox.Extensibility;
 using XrmToolBox.Extensibility.Interfaces;
+using System.Linq;
 
 namespace MsCrmTools.MetadataDocumentGenerator
 {
@@ -107,7 +109,7 @@ namespace MsCrmTools.MetadataDocumentGenerator
                             Tag = name
                         });
                     }
-
+                    
                     foreach (var lc in (IEnumerable<LanguageCode>)e.Result)
                     {
                         cbbLcid.Items.Add(lc);
@@ -134,6 +136,12 @@ namespace MsCrmTools.MetadataDocumentGenerator
             tsbGenerate.Enabled = !isWorking;
 
             settingsToolStripDropDownButton.Enabled = !isWorking;
+            rbDisplayName.Checked = !isWorking;
+
+            if(!isWorking)
+            {
+                fullList = GetListEntitiesFromListView();
+            }
         }
 
         private void tsmiLoadEntitiesFromSolution_Click(object sender, EventArgs e)
@@ -627,5 +635,79 @@ namespace MsCrmTools.MetadataDocumentGenerator
         public string UserName => "MscrmTools";
 
         #endregion IGithub implementation
+
+        #region Filter by Entity name
+
+        private void txtSearchEntity_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                FilterEntity();
+            }
+        }
+
+        private List<Entities> fullList;
+
+        private void FilterEntity()
+        {
+            string filterText = this.txtSearchEntity.Text.Trim().ToUpper();
+            if (filterText.Length == 0)
+            {
+                //Clear filters show all entities
+                FillListEntities(fullList);
+            }
+            else
+            {
+                bool searchBySchemaName = rbSchemaName.Checked;
+                List<Entities> filteredEntities = null;
+                if (searchBySchemaName)
+                {
+                    filteredEntities = this.fullList.Where(x => x.SchemaName.ToUpper().StartsWith(filterText)).ToList();
+                }
+                else
+                {
+                    filteredEntities = this.fullList.Where(x => x.DisplayName.ToUpper().StartsWith(filterText)).ToList();
+                }
+                FillListEntities(filteredEntities.Count == 0 ? fullList : filteredEntities);
+            }
+        }
+
+        private void FillListEntities(List<Entities> items)
+        {
+            lvEntities.Items.Clear();
+            lvEntities.BeginUpdate();
+            foreach (var item in items)
+            {
+                lvEntities.Items.Add(new ListViewItem
+                {
+                    Text = item.DisplayName,
+                    SubItems =
+                    {
+                        item.SchemaName
+                    },
+                    Tag = item.SchemaName
+                });
+            }
+            lvEntities.EndUpdate();
+        }
+
+        private List<Entities> GetListEntitiesFromListView()
+        {
+            List<Entities> listEntities = new List<Entities>();
+            foreach (var item in lvEntities.Items)
+            {
+                var itemDetail = (ListViewItem)item;
+                listEntities.Add(new Entities(){ DisplayName = itemDetail.Text, SchemaName = itemDetail.Tag.ToString() });
+            }
+            return listEntities;
+        }
+
+        public class Entities
+        {
+            public string DisplayName { get; set; }
+            public string SchemaName { get; set; }
+        }
+
+        #endregion Filter by Entity name
     }
 }
