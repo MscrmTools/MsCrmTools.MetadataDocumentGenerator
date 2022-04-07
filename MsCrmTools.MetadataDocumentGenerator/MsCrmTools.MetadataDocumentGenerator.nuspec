@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>MsCrmTools.MetadataDocumentGenerator</id>
+    <version>1.2021.4.4</version>
+    <title>Metadata Document Generator for XrmToolBox</title>
+    <authors>MscrmTools</authors>
+    <owners>MscrmTools</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <projectUrl>https://github.com/MscrmTools/MsCrmTools.MetadataDocumentGenerator</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/wiki/MscrmTools/XrmToolBox/Images/logo_0100.png</iconUrl>
+    <description>A tool to generate Excel and Word document with entities and attributes information</description>
+    <summary>A tool to generate Excel and Word document with entities and attributes information</summary>
+    <releaseNotes>Changed column type names to align with latest Dataverse naming convention</releaseNotes>
+    <tags>XrmToolBox Metadata Generator</tags>
+    <dependencies>
+      <dependency id="XrmToolBox" version="1.2016.11.4" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="bin\Release\Plugins\MsCrmTools.MetadataDocumentGenerator.dll" target="lib\net452\Plugins" />
+  </files>
+</package>
