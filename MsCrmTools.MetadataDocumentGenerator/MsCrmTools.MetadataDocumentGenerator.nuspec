@@ -11,7 +11,11 @@
     <iconUrl>https://raw.githubusercontent.com/wiki/MscrmTools/XrmToolBox/Images/logo_0100.png</iconUrl>
     <description>A tool to generate Excel and Word document with entities and attributes information</description>
     <summary>A tool to generate Excel and Word document with entities and attributes information</summary>
-    <releaseNotes>Changed column type names to align with latest Dataverse naming convention</releaseNotes>
+    <releaseNotes>
+      UI optimization
+      Fixed losing of attributes selection when ordering tables list (#2)
+      Added all tables metadata in the tables list (#3)
+    </releaseNotes>
     <tags>XrmToolBox Metadata Generator</tags>
     <dependencies>
       <dependency id="XrmToolBox" version="1.2016.11.4" />
