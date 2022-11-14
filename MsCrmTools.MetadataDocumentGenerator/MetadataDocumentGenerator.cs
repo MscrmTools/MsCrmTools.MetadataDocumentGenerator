@@ -12,10 +12,8 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
-using System.Windows.Forms.VisualStyles;
 using XrmToolBox.Extensibility;
 using XrmToolBox.Extensibility.Interfaces;
-using System.Linq;
 
 namespace MsCrmTools.MetadataDocumentGenerator
 {
@@ -109,7 +107,7 @@ namespace MsCrmTools.MetadataDocumentGenerator
                             Tag = name
                         });
                     }
-                    
+
                     foreach (var lc in (IEnumerable<LanguageCode>)e.Result)
                     {
                         cbbLcid.Items.Add(lc);
@@ -138,7 +136,7 @@ namespace MsCrmTools.MetadataDocumentGenerator
             settingsToolStripDropDownButton.Enabled = !isWorking;
             rbDisplayName.Checked = !isWorking;
 
-            if(!isWorking)
+            if (!isWorking)
             {
                 fullList = GetListEntitiesFromListView();
             }
@@ -270,9 +268,13 @@ namespace MsCrmTools.MetadataDocumentGenerator
         {
             var lv = (ListView)sender;
 
+            lv.SelectedIndexChanged -= LvEntitiesSelectedIndexChanged;
+            lv.ItemChecked -= LvEntitiesItemChecked;
             lv.Sorting = lv.Sorting == SortOrder.Ascending ? SortOrder.Descending : SortOrder.Ascending;
             lv.ListViewItemSorter = new ListViewItemComparer(e.Column, lv.Sorting);
             lv.Sort();
+            lv.SelectedIndexChanged += LvEntitiesSelectedIndexChanged;
+            lv.ItemChecked += LvEntitiesItemChecked;
         }
 
         private void LvAttributesItemChecked(object sender, ItemCheckedEventArgs e)
@@ -638,15 +640,26 @@ namespace MsCrmTools.MetadataDocumentGenerator
 
         #region Filter by Entity name
 
-        private void txtSearchEntity_KeyUp(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Enter)
-            {
-                FilterEntity();
-            }
-        }
-
         private List<Entities> fullList;
+
+        private void FillListEntities(List<Entities> items)
+        {
+            lvEntities.Items.Clear();
+            lvEntities.BeginUpdate();
+            foreach (var item in items)
+            {
+                lvEntities.Items.Add(new ListViewItem
+                {
+                    Text = item.DisplayName,
+                    SubItems =
+                    {
+                        item.SchemaName
+                    },
+                    Tag = item.SchemaName
+                });
+            }
+            lvEntities.EndUpdate();
+        }
 
         private void FilterEntity()
         {
@@ -672,34 +685,23 @@ namespace MsCrmTools.MetadataDocumentGenerator
             }
         }
 
-        private void FillListEntities(List<Entities> items)
-        {
-            lvEntities.Items.Clear();
-            lvEntities.BeginUpdate();
-            foreach (var item in items)
-            {
-                lvEntities.Items.Add(new ListViewItem
-                {
-                    Text = item.DisplayName,
-                    SubItems =
-                    {
-                        item.SchemaName
-                    },
-                    Tag = item.SchemaName
-                });
-            }
-            lvEntities.EndUpdate();
-        }
-
         private List<Entities> GetListEntitiesFromListView()
         {
             List<Entities> listEntities = new List<Entities>();
             foreach (var item in lvEntities.Items)
             {
                 var itemDetail = (ListViewItem)item;
-                listEntities.Add(new Entities(){ DisplayName = itemDetail.Text, SchemaName = itemDetail.Tag.ToString() });
+                listEntities.Add(new Entities() { DisplayName = itemDetail.Text, SchemaName = itemDetail.Tag.ToString() });
             }
             return listEntities;
+        }
+
+        private void txtSearchEntity_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                FilterEntity();
+            }
         }
 
         public class Entities
