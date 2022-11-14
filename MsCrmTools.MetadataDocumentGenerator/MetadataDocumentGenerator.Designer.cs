@@ -52,6 +52,10 @@ namespace MsCrmTools.MetadataDocumentGenerator
             this.chkAddAudit = new System.Windows.Forms.CheckBox();
             this.chkOneSheet = new System.Windows.Forms.CheckBox();
             this.gbAttributeSelection = new System.Windows.Forms.GroupBox();
+            this.grpBoxSearchBy = new System.Windows.Forms.GroupBox();
+            this.rbDisplayName = new System.Windows.Forms.RadioButton();
+            this.txtSearchEntity = new System.Windows.Forms.TextBox();
+            this.rbSchemaName = new System.Windows.Forms.RadioButton();
             this.chkFilterByPrefix = new System.Windows.Forms.CheckBox();
             this.btnEdit = new System.Windows.Forms.Button();
             this.txtPrefixes = new System.Windows.Forms.TextBox();
@@ -76,16 +80,12 @@ namespace MsCrmTools.MetadataDocumentGenerator
             this.lblOutputFilePath = new System.Windows.Forms.Label();
             this.lblOutputType = new System.Windows.Forms.Label();
             this.cbbOutputType = new System.Windows.Forms.ComboBox();
-            this.txtSearchEntity = new System.Windows.Forms.TextBox();
-            this.rbDisplayName = new System.Windows.Forms.RadioButton();
-            this.rbSchemaName = new System.Windows.Forms.RadioButton();
-            this.grpBoxSearchBy = new System.Windows.Forms.GroupBox();
             this.toolStripMenu.SuspendLayout();
             this.panel1.SuspendLayout();
             this.gbOptions.SuspendLayout();
             this.gbAttributeSelection.SuspendLayout();
-            this.gbOutput.SuspendLayout();
             this.grpBoxSearchBy.SuspendLayout();
+            this.gbOutput.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStripMenu
@@ -98,7 +98,8 @@ namespace MsCrmTools.MetadataDocumentGenerator
             this.settingsToolStripDropDownButton});
             this.toolStripMenu.Location = new System.Drawing.Point(0, 0);
             this.toolStripMenu.Name = "toolStripMenu";
-            this.toolStripMenu.Size = new System.Drawing.Size(911, 25);
+            this.toolStripMenu.Padding = new System.Windows.Forms.Padding(0, 0, 3, 0);
+            this.toolStripMenu.Size = new System.Drawing.Size(3585, 57);
             this.toolStripMenu.TabIndex = 2;
             this.toolStripMenu.Text = "toolStrip1";
             // 
@@ -109,7 +110,7 @@ namespace MsCrmTools.MetadataDocumentGenerator
             this.tssbLoadEntities.Image = global::MsCrmTools.MetadataDocumentGenerator.Properties.Resources.ico_16_0;
             this.tssbLoadEntities.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tssbLoadEntities.Name = "tssbLoadEntities";
-            this.tssbLoadEntities.Size = new System.Drawing.Size(106, 22);
+            this.tssbLoadEntities.Size = new System.Drawing.Size(157, 29);
             this.tssbLoadEntities.Text = "Load Entities";
             this.tssbLoadEntities.ToolTipText = "Load all entities from the connected organization";
             this.tssbLoadEntities.ButtonClick += new System.EventHandler(this.tssbLoadEntities_ButtonClick);
@@ -117,14 +118,14 @@ namespace MsCrmTools.MetadataDocumentGenerator
             // tsmiLoadEntitiesFromSolution
             // 
             this.tsmiLoadEntitiesFromSolution.Name = "tsmiLoadEntitiesFromSolution";
-            this.tsmiLoadEntitiesFromSolution.Size = new System.Drawing.Size(229, 22);
+            this.tsmiLoadEntitiesFromSolution.Size = new System.Drawing.Size(345, 34);
             this.tsmiLoadEntitiesFromSolution.Text = "Load Entities from solution(s)";
             this.tsmiLoadEntitiesFromSolution.Click += new System.EventHandler(this.tsmiLoadEntitiesFromSolution_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 34);
             // 
             // tsbGenerate
             // 
@@ -132,14 +133,14 @@ namespace MsCrmTools.MetadataDocumentGenerator
             this.tsbGenerate.Image = ((System.Drawing.Image)(resources.GetObject("tsbGenerate.Image")));
             this.tsbGenerate.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbGenerate.Name = "tsbGenerate";
-            this.tsbGenerate.Size = new System.Drawing.Size(132, 22);
+            this.tsbGenerate.Size = new System.Drawing.Size(188, 52);
             this.tsbGenerate.Text = "Generate document";
             this.tsbGenerate.Click += new System.EventHandler(this.TsbGenerateClick);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 34);
             // 
             // settingsToolStripDropDownButton
             // 
@@ -150,14 +151,14 @@ namespace MsCrmTools.MetadataDocumentGenerator
             this.settingsToolStripDropDownButton.Image = ((System.Drawing.Image)(resources.GetObject("settingsToolStripDropDownButton.Image")));
             this.settingsToolStripDropDownButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.settingsToolStripDropDownButton.Name = "settingsToolStripDropDownButton";
-            this.settingsToolStripDropDownButton.Size = new System.Drawing.Size(138, 22);
+            this.settingsToolStripDropDownButton.Size = new System.Drawing.Size(207, 29);
             this.settingsToolStripDropDownButton.Text = "Generation settings";
             // 
             // saveCurrentSettingsToolStripMenuItem
             // 
             this.saveCurrentSettingsToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("saveCurrentSettingsToolStripMenuItem.Image")));
             this.saveCurrentSettingsToolStripMenuItem.Name = "saveCurrentSettingsToolStripMenuItem";
-            this.saveCurrentSettingsToolStripMenuItem.Size = new System.Drawing.Size(243, 22);
+            this.saveCurrentSettingsToolStripMenuItem.Size = new System.Drawing.Size(368, 34);
             this.saveCurrentSettingsToolStripMenuItem.Text = "Save current generation settings";
             this.saveCurrentSettingsToolStripMenuItem.Click += new System.EventHandler(this.SaveCurrentSettingsToolStripMenuItemClick);
             // 
@@ -165,7 +166,7 @@ namespace MsCrmTools.MetadataDocumentGenerator
             // 
             this.loadSettingsToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("loadSettingsToolStripMenuItem.Image")));
             this.loadSettingsToolStripMenuItem.Name = "loadSettingsToolStripMenuItem";
-            this.loadSettingsToolStripMenuItem.Size = new System.Drawing.Size(243, 22);
+            this.loadSettingsToolStripMenuItem.Size = new System.Drawing.Size(368, 34);
             this.loadSettingsToolStripMenuItem.Text = "Load generation settings";
             this.loadSettingsToolStripMenuItem.Click += new System.EventHandler(this.LoadSettingsToolStripMenuItemClick);
             // 
@@ -184,15 +185,14 @@ namespace MsCrmTools.MetadataDocumentGenerator
             this.panel1.Controls.Add(this.gbOptions);
             this.panel1.Controls.Add(this.gbAttributeSelection);
             this.panel1.Controls.Add(this.gbOutput);
-            this.panel1.Location = new System.Drawing.Point(0, 25);
+            this.panel1.Location = new System.Drawing.Point(0, 38);
+            this.panel1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(911, 575);
+            this.panel1.Size = new System.Drawing.Size(2390, 1634);
             this.panel1.TabIndex = 3;
             // 
             // gbOptions
             // 
-            this.gbOptions.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.gbOptions.Controls.Add(this.chkAddFormLocation);
             this.gbOptions.Controls.Add(this.chkDisplayEntityList);
             this.gbOptions.Controls.Add(this.chkAddValidForAf);
@@ -200,10 +200,13 @@ namespace MsCrmTools.MetadataDocumentGenerator
             this.gbOptions.Controls.Add(this.chkAddFls);
             this.gbOptions.Controls.Add(this.chkAddAudit);
             this.gbOptions.Controls.Add(this.chkOneSheet);
+            this.gbOptions.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.gbOptions.Enabled = false;
-            this.gbOptions.Location = new System.Drawing.Point(3, 448);
+            this.gbOptions.Location = new System.Drawing.Point(0, 1468);
+            this.gbOptions.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.gbOptions.Name = "gbOptions";
-            this.gbOptions.Size = new System.Drawing.Size(854, 130);
+            this.gbOptions.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.gbOptions.Size = new System.Drawing.Size(2390, 166);
             this.gbOptions.TabIndex = 8;
             this.gbOptions.TabStop = false;
             this.gbOptions.Text = "Options";
@@ -211,9 +214,10 @@ namespace MsCrmTools.MetadataDocumentGenerator
             // chkAddFormLocation
             // 
             this.chkAddFormLocation.AutoSize = true;
-            this.chkAddFormLocation.Location = new System.Drawing.Point(260, 42);
+            this.chkAddFormLocation.Location = new System.Drawing.Point(390, 65);
+            this.chkAddFormLocation.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.chkAddFormLocation.Name = "chkAddFormLocation";
-            this.chkAddFormLocation.Size = new System.Drawing.Size(185, 17);
+            this.chkAddFormLocation.Size = new System.Drawing.Size(276, 24);
             this.chkAddFormLocation.TabIndex = 5;
             this.chkAddFormLocation.Text = "Include Attribute location in Forms";
             this.chkAddFormLocation.UseVisualStyleBackColor = true;
@@ -222,9 +226,10 @@ namespace MsCrmTools.MetadataDocumentGenerator
             // 
             this.chkDisplayEntityList.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.chkDisplayEntityList.AutoSize = true;
-            this.chkDisplayEntityList.Location = new System.Drawing.Point(584, 19);
+            this.chkDisplayEntityList.Location = new System.Drawing.Point(1986, 29);
+            this.chkDisplayEntityList.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.chkDisplayEntityList.Name = "chkDisplayEntityList";
-            this.chkDisplayEntityList.Size = new System.Drawing.Size(230, 17);
+            this.chkDisplayEntityList.Size = new System.Drawing.Size(344, 24);
             this.chkDisplayEntityList.TabIndex = 4;
             this.chkDisplayEntityList.Text = "Gather entities list in a summary (Excel only)";
             this.chkDisplayEntityList.UseVisualStyleBackColor = true;
@@ -232,9 +237,10 @@ namespace MsCrmTools.MetadataDocumentGenerator
             // chkAddValidForAf
             // 
             this.chkAddValidForAf.AutoSize = true;
-            this.chkAddValidForAf.Location = new System.Drawing.Point(260, 19);
+            this.chkAddValidForAf.Location = new System.Drawing.Point(390, 29);
+            this.chkAddValidForAf.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.chkAddValidForAf.Name = "chkAddValidForAf";
-            this.chkAddValidForAf.Size = new System.Drawing.Size(231, 17);
+            this.chkAddValidForAf.Size = new System.Drawing.Size(342, 24);
             this.chkAddValidForAf.TabIndex = 3;
             this.chkAddValidForAf.Text = "Include Valid for Advanced Find information";
             this.chkAddValidForAf.UseVisualStyleBackColor = true;
@@ -242,9 +248,10 @@ namespace MsCrmTools.MetadataDocumentGenerator
             // chkAddRequiredLevel
             // 
             this.chkAddRequiredLevel.AutoSize = true;
-            this.chkAddRequiredLevel.Location = new System.Drawing.Point(6, 65);
+            this.chkAddRequiredLevel.Location = new System.Drawing.Point(9, 100);
+            this.chkAddRequiredLevel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.chkAddRequiredLevel.Name = "chkAddRequiredLevel";
-            this.chkAddRequiredLevel.Size = new System.Drawing.Size(203, 17);
+            this.chkAddRequiredLevel.Size = new System.Drawing.Size(301, 24);
             this.chkAddRequiredLevel.TabIndex = 2;
             this.chkAddRequiredLevel.Text = "Include Requirement level information";
             this.chkAddRequiredLevel.UseVisualStyleBackColor = true;
@@ -252,9 +259,10 @@ namespace MsCrmTools.MetadataDocumentGenerator
             // chkAddFls
             // 
             this.chkAddFls.AutoSize = true;
-            this.chkAddFls.Location = new System.Drawing.Point(6, 42);
+            this.chkAddFls.Location = new System.Drawing.Point(9, 65);
+            this.chkAddFls.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.chkAddFls.Name = "chkAddFls";
-            this.chkAddFls.Size = new System.Drawing.Size(210, 17);
+            this.chkAddFls.Size = new System.Drawing.Size(310, 24);
             this.chkAddFls.TabIndex = 1;
             this.chkAddFls.Text = "Include Field Level Security information";
             this.chkAddFls.UseVisualStyleBackColor = true;
@@ -262,9 +270,10 @@ namespace MsCrmTools.MetadataDocumentGenerator
             // chkAddAudit
             // 
             this.chkAddAudit.AutoSize = true;
-            this.chkAddAudit.Location = new System.Drawing.Point(6, 19);
+            this.chkAddAudit.Location = new System.Drawing.Point(9, 29);
+            this.chkAddAudit.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.chkAddAudit.Name = "chkAddAudit";
-            this.chkAddAudit.Size = new System.Drawing.Size(142, 17);
+            this.chkAddAudit.Size = new System.Drawing.Size(211, 24);
             this.chkAddAudit.TabIndex = 0;
             this.chkAddAudit.Text = "Include Audit information";
             this.chkAddAudit.UseVisualStyleBackColor = true;
@@ -273,17 +282,16 @@ namespace MsCrmTools.MetadataDocumentGenerator
             // 
             this.chkOneSheet.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.chkOneSheet.AutoSize = true;
-            this.chkOneSheet.Location = new System.Drawing.Point(582, 42);
+            this.chkOneSheet.Location = new System.Drawing.Point(1986, 65);
+            this.chkOneSheet.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.chkOneSheet.Name = "chkOneSheet";
-            this.chkOneSheet.Size = new System.Drawing.Size(233, 17);
+            this.chkOneSheet.Size = new System.Drawing.Size(346, 24);
             this.chkOneSheet.TabIndex = 1;
             this.chkOneSheet.Text = "Export all attributes in one sheet (Excel only)";
             this.chkOneSheet.UseVisualStyleBackColor = true;
             // 
             // gbAttributeSelection
             // 
-            this.gbAttributeSelection.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.gbAttributeSelection.Controls.Add(this.grpBoxSearchBy);
             this.gbAttributeSelection.Controls.Add(this.chkFilterByPrefix);
             this.gbAttributeSelection.Controls.Add(this.btnEdit);
@@ -296,20 +304,71 @@ namespace MsCrmTools.MetadataDocumentGenerator
             this.gbAttributeSelection.Controls.Add(this.cbbSelectionType);
             this.gbAttributeSelection.Controls.Add(this.lvForms);
             this.gbAttributeSelection.Controls.Add(this.lvAttributes);
+            this.gbAttributeSelection.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gbAttributeSelection.Enabled = false;
-            this.gbAttributeSelection.Location = new System.Drawing.Point(3, 115);
+            this.gbAttributeSelection.Location = new System.Drawing.Point(0, 165);
+            this.gbAttributeSelection.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.gbAttributeSelection.Name = "gbAttributeSelection";
-            this.gbAttributeSelection.Size = new System.Drawing.Size(854, 327);
+            this.gbAttributeSelection.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.gbAttributeSelection.Size = new System.Drawing.Size(2390, 1469);
             this.gbAttributeSelection.TabIndex = 7;
             this.gbAttributeSelection.TabStop = false;
             this.gbAttributeSelection.Text = "Attributes Selection";
             // 
+            // grpBoxSearchBy
+            // 
+            this.grpBoxSearchBy.Controls.Add(this.rbDisplayName);
+            this.grpBoxSearchBy.Controls.Add(this.txtSearchEntity);
+            this.grpBoxSearchBy.Controls.Add(this.rbSchemaName);
+            this.grpBoxSearchBy.Location = new System.Drawing.Point(14, 105);
+            this.grpBoxSearchBy.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.grpBoxSearchBy.Name = "grpBoxSearchBy";
+            this.grpBoxSearchBy.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.grpBoxSearchBy.Size = new System.Drawing.Size(585, 62);
+            this.grpBoxSearchBy.TabIndex = 93;
+            this.grpBoxSearchBy.TabStop = false;
+            this.grpBoxSearchBy.Text = "Search entity by";
+            // 
+            // rbDisplayName
+            // 
+            this.rbDisplayName.AutoSize = true;
+            this.rbDisplayName.Checked = true;
+            this.rbDisplayName.Location = new System.Drawing.Point(292, 22);
+            this.rbDisplayName.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.rbDisplayName.Name = "rbDisplayName";
+            this.rbDisplayName.Size = new System.Drawing.Size(129, 24);
+            this.rbDisplayName.TabIndex = 91;
+            this.rbDisplayName.TabStop = true;
+            this.rbDisplayName.Text = "Display name";
+            this.rbDisplayName.UseVisualStyleBackColor = true;
+            // 
+            // txtSearchEntity
+            // 
+            this.txtSearchEntity.Location = new System.Drawing.Point(9, 22);
+            this.txtSearchEntity.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtSearchEntity.Name = "txtSearchEntity";
+            this.txtSearchEntity.Size = new System.Drawing.Size(274, 26);
+            this.txtSearchEntity.TabIndex = 90;
+            this.txtSearchEntity.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtSearchEntity_KeyUp);
+            // 
+            // rbSchemaName
+            // 
+            this.rbSchemaName.AutoSize = true;
+            this.rbSchemaName.Location = new System.Drawing.Point(434, 22);
+            this.rbSchemaName.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.rbSchemaName.Name = "rbSchemaName";
+            this.rbSchemaName.Size = new System.Drawing.Size(139, 24);
+            this.rbSchemaName.TabIndex = 92;
+            this.rbSchemaName.Text = "Schema Name";
+            this.rbSchemaName.UseVisualStyleBackColor = true;
+            // 
             // chkFilterByPrefix
             // 
             this.chkFilterByPrefix.AutoSize = true;
-            this.chkFilterByPrefix.Location = new System.Drawing.Point(408, 21);
+            this.chkFilterByPrefix.Location = new System.Drawing.Point(612, 32);
+            this.chkFilterByPrefix.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.chkFilterByPrefix.Name = "chkFilterByPrefix";
-            this.chkFilterByPrefix.Size = new System.Drawing.Size(173, 17);
+            this.chkFilterByPrefix.Size = new System.Drawing.Size(259, 24);
             this.chkFilterByPrefix.TabIndex = 89;
             this.chkFilterByPrefix.Text = "Filter custom attributes by prefix";
             this.chkFilterByPrefix.UseVisualStyleBackColor = true;
@@ -320,9 +379,10 @@ namespace MsCrmTools.MetadataDocumentGenerator
             this.btnEdit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnEdit.Enabled = false;
             this.btnEdit.Image = ((System.Drawing.Image)(resources.GetObject("btnEdit.Image")));
-            this.btnEdit.Location = new System.Drawing.Point(824, 17);
+            this.btnEdit.Location = new System.Drawing.Point(2345, 26);
+            this.btnEdit.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btnEdit.Name = "btnEdit";
-            this.btnEdit.Size = new System.Drawing.Size(23, 23);
+            this.btnEdit.Size = new System.Drawing.Size(34, 35);
             this.btnEdit.TabIndex = 88;
             this.btnEdit.UseVisualStyleBackColor = true;
             this.btnEdit.Click += new System.EventHandler(this.btnEdit_Click);
@@ -332,17 +392,19 @@ namespace MsCrmTools.MetadataDocumentGenerator
             this.txtPrefixes.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtPrefixes.Enabled = false;
-            this.txtPrefixes.Location = new System.Drawing.Point(609, 19);
+            this.txtPrefixes.Location = new System.Drawing.Point(914, 29);
+            this.txtPrefixes.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.txtPrefixes.Name = "txtPrefixes";
-            this.txtPrefixes.Size = new System.Drawing.Size(210, 20);
+            this.txtPrefixes.Size = new System.Drawing.Size(1422, 26);
             this.txtPrefixes.TabIndex = 87;
             // 
             // chkSelectAll
             // 
             this.chkSelectAll.AutoSize = true;
-            this.chkSelectAll.Location = new System.Drawing.Point(283, 51);
+            this.chkSelectAll.Location = new System.Drawing.Point(424, 78);
+            this.chkSelectAll.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.chkSelectAll.Name = "chkSelectAll";
-            this.chkSelectAll.Size = new System.Drawing.Size(116, 17);
+            this.chkSelectAll.Size = new System.Drawing.Size(166, 24);
             this.chkSelectAll.TabIndex = 85;
             this.chkSelectAll.Text = "Select/Unselect all";
             this.chkSelectAll.UseVisualStyleBackColor = true;
@@ -351,9 +413,10 @@ namespace MsCrmTools.MetadataDocumentGenerator
             // lblSubSelect
             // 
             this.lblSubSelect.AutoSize = true;
-            this.lblSubSelect.Location = new System.Drawing.Point(405, 52);
+            this.lblSubSelect.Location = new System.Drawing.Point(608, 80);
+            this.lblSubSelect.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblSubSelect.Name = "lblSubSelect";
-            this.lblSubSelect.Size = new System.Drawing.Size(51, 13);
+            this.lblSubSelect.Size = new System.Drawing.Size(78, 20);
             this.lblSubSelect.TabIndex = 83;
             this.lblSubSelect.Text = "Attributes";
             this.lblSubSelect.Visible = false;
@@ -361,9 +424,10 @@ namespace MsCrmTools.MetadataDocumentGenerator
             // lblEntities
             // 
             this.lblEntities.AutoSize = true;
-            this.lblEntities.Location = new System.Drawing.Point(9, 52);
+            this.lblEntities.Location = new System.Drawing.Point(14, 80);
+            this.lblEntities.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblEntities.Name = "lblEntities";
-            this.lblEntities.Size = new System.Drawing.Size(41, 13);
+            this.lblEntities.Size = new System.Drawing.Size(62, 20);
             this.lblEntities.TabIndex = 82;
             this.lblEntities.Text = "Entities";
             // 
@@ -378,9 +442,10 @@ namespace MsCrmTools.MetadataDocumentGenerator
             this.lvEntities.FullRowSelect = true;
             this.lvEntities.GridLines = true;
             this.lvEntities.HideSelection = false;
-            this.lvEntities.Location = new System.Drawing.Point(9, 114);
+            this.lvEntities.Location = new System.Drawing.Point(14, 177);
+            this.lvEntities.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.lvEntities.Name = "lvEntities";
-            this.lvEntities.Size = new System.Drawing.Size(390, 207);
+            this.lvEntities.Size = new System.Drawing.Size(583, 1116);
             this.lvEntities.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.lvEntities.TabIndex = 80;
             this.lvEntities.UseCompatibleStateImageBehavior = false;
@@ -402,9 +467,10 @@ namespace MsCrmTools.MetadataDocumentGenerator
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 22);
+            this.label1.Location = new System.Drawing.Point(9, 34);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(66, 13);
+            this.label1.Size = new System.Drawing.Size(100, 20);
             this.label1.TabIndex = 3;
             this.label1.Text = "Generate for";
             // 
@@ -419,9 +485,10 @@ namespace MsCrmTools.MetadataDocumentGenerator
             "Option Sets, Boolean, State and Status attributes",
             "Selected attributes",
             "Unmanaged attributes"});
-            this.cbbSelectionType.Location = new System.Drawing.Point(118, 19);
+            this.cbbSelectionType.Location = new System.Drawing.Point(177, 29);
+            this.cbbSelectionType.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.cbbSelectionType.Name = "cbbSelectionType";
-            this.cbbSelectionType.Size = new System.Drawing.Size(281, 21);
+            this.cbbSelectionType.Size = new System.Drawing.Size(420, 28);
             this.cbbSelectionType.TabIndex = 2;
             this.cbbSelectionType.SelectedIndexChanged += new System.EventHandler(this.CbbSelectionTypeSelectedIndexChanged);
             // 
@@ -436,9 +503,10 @@ namespace MsCrmTools.MetadataDocumentGenerator
             this.lvForms.FullRowSelect = true;
             this.lvForms.GridLines = true;
             this.lvForms.HideSelection = false;
-            this.lvForms.Location = new System.Drawing.Point(405, 68);
+            this.lvForms.Location = new System.Drawing.Point(608, 105);
+            this.lvForms.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.lvForms.Name = "lvForms";
-            this.lvForms.Size = new System.Drawing.Size(443, 253);
+            this.lvForms.Size = new System.Drawing.Size(1771, 1188);
             this.lvForms.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.lvForms.TabIndex = 84;
             this.lvForms.UseCompatibleStateImageBehavior = false;
@@ -464,9 +532,10 @@ namespace MsCrmTools.MetadataDocumentGenerator
             this.lvAttributes.FullRowSelect = true;
             this.lvAttributes.GridLines = true;
             this.lvAttributes.HideSelection = false;
-            this.lvAttributes.Location = new System.Drawing.Point(405, 68);
+            this.lvAttributes.Location = new System.Drawing.Point(608, 105);
+            this.lvAttributes.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.lvAttributes.Name = "lvAttributes";
-            this.lvAttributes.Size = new System.Drawing.Size(443, 253);
+            this.lvAttributes.Size = new System.Drawing.Size(1771, 1188);
             this.lvAttributes.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.lvAttributes.TabIndex = 81;
             this.lvAttributes.UseCompatibleStateImageBehavior = false;
@@ -487,8 +556,6 @@ namespace MsCrmTools.MetadataDocumentGenerator
             // 
             // gbOutput
             // 
-            this.gbOutput.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.gbOutput.Controls.Add(this.lblLcid);
             this.gbOutput.Controls.Add(this.cbbLcid);
             this.gbOutput.Controls.Add(this.btnBrowseFilePath);
@@ -496,10 +563,13 @@ namespace MsCrmTools.MetadataDocumentGenerator
             this.gbOutput.Controls.Add(this.lblOutputFilePath);
             this.gbOutput.Controls.Add(this.lblOutputType);
             this.gbOutput.Controls.Add(this.cbbOutputType);
+            this.gbOutput.Dock = System.Windows.Forms.DockStyle.Top;
             this.gbOutput.Enabled = false;
-            this.gbOutput.Location = new System.Drawing.Point(3, 3);
+            this.gbOutput.Location = new System.Drawing.Point(0, 0);
+            this.gbOutput.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.gbOutput.Name = "gbOutput";
-            this.gbOutput.Size = new System.Drawing.Size(854, 106);
+            this.gbOutput.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.gbOutput.Size = new System.Drawing.Size(2390, 165);
             this.gbOutput.TabIndex = 6;
             this.gbOutput.TabStop = false;
             this.gbOutput.Text = "Output";
@@ -507,9 +577,10 @@ namespace MsCrmTools.MetadataDocumentGenerator
             // lblLcid
             // 
             this.lblLcid.AutoSize = true;
-            this.lblLcid.Location = new System.Drawing.Point(6, 76);
+            this.lblLcid.Location = new System.Drawing.Point(9, 117);
+            this.lblLcid.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblLcid.Name = "lblLcid";
-            this.lblLcid.Size = new System.Drawing.Size(55, 13);
+            this.lblLcid.Size = new System.Drawing.Size(81, 20);
             this.lblLcid.TabIndex = 6;
             this.lblLcid.Text = "Language";
             // 
@@ -519,17 +590,19 @@ namespace MsCrmTools.MetadataDocumentGenerator
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cbbLcid.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbbLcid.FormattingEnabled = true;
-            this.cbbLcid.Location = new System.Drawing.Point(118, 73);
+            this.cbbLcid.Location = new System.Drawing.Point(177, 112);
+            this.cbbLcid.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.cbbLcid.Name = "cbbLcid";
-            this.cbbLcid.Size = new System.Drawing.Size(730, 21);
+            this.cbbLcid.Size = new System.Drawing.Size(2202, 28);
             this.cbbLcid.TabIndex = 5;
             // 
             // btnBrowseFilePath
             // 
             this.btnBrowseFilePath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnBrowseFilePath.Location = new System.Drawing.Point(807, 44);
+            this.btnBrowseFilePath.Location = new System.Drawing.Point(2319, 68);
+            this.btnBrowseFilePath.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btnBrowseFilePath.Name = "btnBrowseFilePath";
-            this.btnBrowseFilePath.Size = new System.Drawing.Size(40, 23);
+            this.btnBrowseFilePath.Size = new System.Drawing.Size(60, 35);
             this.btnBrowseFilePath.TabIndex = 4;
             this.btnBrowseFilePath.Text = "...";
             this.btnBrowseFilePath.UseVisualStyleBackColor = true;
@@ -539,27 +612,30 @@ namespace MsCrmTools.MetadataDocumentGenerator
             // 
             this.txtOutputFilePath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtOutputFilePath.Location = new System.Drawing.Point(118, 46);
+            this.txtOutputFilePath.Location = new System.Drawing.Point(177, 71);
+            this.txtOutputFilePath.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.txtOutputFilePath.Name = "txtOutputFilePath";
             this.txtOutputFilePath.ReadOnly = true;
-            this.txtOutputFilePath.Size = new System.Drawing.Size(683, 20);
+            this.txtOutputFilePath.Size = new System.Drawing.Size(2131, 26);
             this.txtOutputFilePath.TabIndex = 3;
             // 
             // lblOutputFilePath
             // 
             this.lblOutputFilePath.AutoSize = true;
-            this.lblOutputFilePath.Location = new System.Drawing.Point(6, 49);
+            this.lblOutputFilePath.Location = new System.Drawing.Point(9, 75);
+            this.lblOutputFilePath.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblOutputFilePath.Name = "lblOutputFilePath";
-            this.lblOutputFilePath.Size = new System.Drawing.Size(47, 13);
+            this.lblOutputFilePath.Size = new System.Drawing.Size(70, 20);
             this.lblOutputFilePath.TabIndex = 2;
             this.lblOutputFilePath.Text = "File path";
             // 
             // lblOutputType
             // 
             this.lblOutputType.AutoSize = true;
-            this.lblOutputType.Location = new System.Drawing.Point(6, 22);
+            this.lblOutputType.Location = new System.Drawing.Point(9, 34);
+            this.lblOutputType.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblOutputType.Name = "lblOutputType";
-            this.lblOutputType.Size = new System.Drawing.Size(88, 13);
+            this.lblOutputType.Size = new System.Drawing.Size(133, 20);
             this.lblOutputType.TabIndex = 1;
             this.lblOutputType.Text = "Document format";
             // 
@@ -572,62 +648,22 @@ namespace MsCrmTools.MetadataDocumentGenerator
             this.cbbOutputType.Items.AddRange(new object[] {
             "Excel Workbook",
             "Word Document"});
-            this.cbbOutputType.Location = new System.Drawing.Point(118, 19);
+            this.cbbOutputType.Location = new System.Drawing.Point(177, 29);
+            this.cbbOutputType.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.cbbOutputType.Name = "cbbOutputType";
-            this.cbbOutputType.Size = new System.Drawing.Size(730, 21);
+            this.cbbOutputType.Size = new System.Drawing.Size(2202, 28);
             this.cbbOutputType.TabIndex = 0;
             this.cbbOutputType.SelectedIndexChanged += new System.EventHandler(this.CbbOutputTypeSelectedIndexChanged);
             // 
-            // txtSearchEntity
-            // 
-            this.txtSearchEntity.Location = new System.Drawing.Point(6, 14);
-            this.txtSearchEntity.Name = "txtSearchEntity";
-            this.txtSearchEntity.Size = new System.Drawing.Size(184, 20);
-            this.txtSearchEntity.TabIndex = 90;
-            this.txtSearchEntity.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtSearchEntity_KeyUp);
-            // 
-            // rbDisplayName
-            // 
-            this.rbDisplayName.AutoSize = true;
-            this.rbDisplayName.Checked = true;
-            this.rbDisplayName.Location = new System.Drawing.Point(195, 14);
-            this.rbDisplayName.Name = "rbDisplayName";
-            this.rbDisplayName.Size = new System.Drawing.Size(88, 17);
-            this.rbDisplayName.TabIndex = 91;
-            this.rbDisplayName.TabStop = true;
-            this.rbDisplayName.Text = "Display name";
-            this.rbDisplayName.UseVisualStyleBackColor = true;
-            // 
-            // rbSchemaName
-            // 
-            this.rbSchemaName.AutoSize = true;
-            this.rbSchemaName.Location = new System.Drawing.Point(289, 14);
-            this.rbSchemaName.Name = "rbSchemaName";
-            this.rbSchemaName.Size = new System.Drawing.Size(95, 17);
-            this.rbSchemaName.TabIndex = 92;
-            this.rbSchemaName.Text = "Schema Name";
-            this.rbSchemaName.UseVisualStyleBackColor = true;
-            // 
-            // grpBoxSearchBy
-            // 
-            this.grpBoxSearchBy.Controls.Add(this.rbDisplayName);
-            this.grpBoxSearchBy.Controls.Add(this.txtSearchEntity);
-            this.grpBoxSearchBy.Controls.Add(this.rbSchemaName);
-            this.grpBoxSearchBy.Location = new System.Drawing.Point(9, 68);
-            this.grpBoxSearchBy.Name = "grpBoxSearchBy";
-            this.grpBoxSearchBy.Size = new System.Drawing.Size(390, 40);
-            this.grpBoxSearchBy.TabIndex = 93;
-            this.grpBoxSearchBy.TabStop = false;
-            this.grpBoxSearchBy.Text = "Search entity by";
-            // 
             // MetadataDocumentGenerator
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.toolStripMenu);
+            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "MetadataDocumentGenerator";
-            this.Size = new System.Drawing.Size(911, 600);
+            this.Size = new System.Drawing.Size(2390, 1672);
             this.toolStripMenu.ResumeLayout(false);
             this.toolStripMenu.PerformLayout();
             this.panel1.ResumeLayout(false);
@@ -635,10 +671,10 @@ namespace MsCrmTools.MetadataDocumentGenerator
             this.gbOptions.PerformLayout();
             this.gbAttributeSelection.ResumeLayout(false);
             this.gbAttributeSelection.PerformLayout();
-            this.gbOutput.ResumeLayout(false);
-            this.gbOutput.PerformLayout();
             this.grpBoxSearchBy.ResumeLayout(false);
             this.grpBoxSearchBy.PerformLayout();
+            this.gbOutput.ResumeLayout(false);
+            this.gbOutput.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
