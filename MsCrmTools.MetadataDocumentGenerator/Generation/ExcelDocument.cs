@@ -373,7 +373,18 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
                 y++;
             }
 
-            if (emd.OwnershipType != null) sheet.Cells[summaryLineNumber, y].Value = emd.OwnershipType.Value;
+            if (emd.OwnershipType != null)
+            {
+                sheet.Cells[summaryLineNumber, y].Value = emd.OwnershipType.Value;
+                y++;
+            }
+
+            var theType = typeof(EntityMetadata);
+            foreach (var property in theType.GetProperties().OrderBy(p => p.Name))
+            {
+                sheet.Cells[summaryLineNumber, y].Value = GetRealValue(property.GetValue(emd, null));
+                y++;
+            }
         }
 
         /// <summary>
@@ -914,6 +925,24 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
             return value.ToString();
         }
 
+        private string GetRealValue(object value)
+        {
+            if (value is BooleanManagedProperty bmp)
+            {
+                return bmp?.Value.ToString();
+            }
+            else if (value is OwnershipTypes ot)
+            {
+                return ot.ToString();
+            }
+            else if (value is Label l)
+            {
+                return l?.UserLocalizedLabel?.Label;
+            }
+
+            return value?.ToString();
+        }
+
         /// <summary>
         /// Adds row header for attribute list
         /// </summary>
@@ -1034,6 +1063,13 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
 
             sheet.Cells[x, y].Value = "Ownership Type";
             y++;
+
+            var theType = typeof(EntityMetadata);
+            foreach (var property in theType.GetProperties().OrderBy(p => p.Name))
+            {
+                sheet.Cells[x, y].Value = property.Name;
+                y++;
+            }
 
             for (int i = 1; i < y; i++)
             {
