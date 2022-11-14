@@ -122,10 +122,10 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
             sheet.Cells[lineNumber, y].Value = amd.DisplayName.LocalizedLabels.Count == 0 ? "N/A" : amdDisplayName != null ? amdDisplayName.Label : "";
             y++;
 
-            if (amd.AttributeType != null) sheet.Cells[lineNumber, y].Value = amd.AttributeType.Value.ToString();
+            if (amd.AttributeType != null) sheet.Cells[lineNumber, y].Value = GetNewTypeName(amd.AttributeType.Value);
             if (amd.AttributeType.Value == AttributeTypeCode.Virtual && amd is MultiSelectPicklistAttributeMetadata)
             {
-                sheet.Cells[lineNumber, y].Value = "MultiSelect OptionSet";
+                sheet.Cells[lineNumber, y].Value = "Choices";
             }
             y++;
 
@@ -901,6 +901,17 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
                         }
                         break;
                 }
+        }
+
+        private string GetNewTypeName(AttributeTypeCode value)
+        {
+            if (value == AttributeTypeCode.Picklist) return "Choice";
+            if (value == AttributeTypeCode.Memo) return "Multiline Text";
+            if (value == AttributeTypeCode.String) return "Text";
+            if (value == AttributeTypeCode.Money) return "Currency";
+            if (value == AttributeTypeCode.Boolean) return "Two options";
+            if (value == AttributeTypeCode.Integer) return "Whole number";
+            return value.ToString();
         }
 
         /// <summary>

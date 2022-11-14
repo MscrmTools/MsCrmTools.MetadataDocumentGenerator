@@ -250,6 +250,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="MsCrmTools.MetadataDocumentGenerator.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
