@@ -74,7 +74,7 @@ namespace MsCrmTools.MetadataDocumentGenerator
         public AttributeSelectionOption AttributesSelection { get; set; }
         public int DisplayNamesLangugageCode { get; set; }
         public List<EntityItem> EntitiesToProceed { get; set; }
-
+        public bool ExcludeVirtualAttributes { get; set; }
         public string FilePath { get; set; }
 
         public bool GenerateOnlyOneTable { get; set; }

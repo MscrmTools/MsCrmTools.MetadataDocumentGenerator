@@ -273,6 +273,7 @@
     <Compile Include="Generation\WordDocumentDocX.cs" />
     <Compile Include="Generation\WordDocumentOpenXml.cs" />
     <Compile Include="Helper\AttributeMetadataComparer.cs" />
+    <Compile Include="Helper\Extensions.cs" />
     <Compile Include="Helper\ListViewItemComparer.cs" />
     <Compile Include="Helper\MetadataHelper.cs" />
     <Compile Include="Helper\OpenXmlHelper.cs" />
@@ -318,13 +319,15 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>IF NOT EXIST Plugins mkdir Plugins
+DEL $(TargetDir)Plugins\manifest.json
+      
 IF $(ConfigurationName) == Release "$(SolutionDir)packages\ILMerge.3.0.41\tools\net452\ILMerge.exe" /log:"$(TargetDir)ilmerge.log"  /targetplatform:v4,"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6" /lib:"C:\Windows\Microsoft.Net\Framework64\v4.0.30319" /out:"$(TargetDir)Plugins\$(TargetFileName)" MsCrmTools.MetadataDocumentGenerator.dll  EPPlus.dll DocumentFormat.OpenXml.dll
 
 IF $(ConfigurationName) == Debug COPY /Y "$(TargetFileName)" "$(TargetDir)Plugins"</PostBuildEvent>
   </PropertyGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_BuildVersioningStyle="None.YearStamp.MonthStamp.DayStamp" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_ConfigurationName="Release" />
+      <UserProperties BuildVersion_ConfigurationName="Release" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.YearStamp.MonthStamp.DayStamp" />
     </VisualStudio>
   </ProjectExtensions>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

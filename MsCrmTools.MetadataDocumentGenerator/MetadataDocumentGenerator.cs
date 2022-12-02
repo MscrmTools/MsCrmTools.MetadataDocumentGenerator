@@ -496,6 +496,7 @@ namespace MsCrmTools.MetadataDocumentGenerator
             settings.AddValidForAdvancedFind = chkAddValidForAf.Checked;
             settings.AddFormLocation = chkAddFormLocation.Checked;
             settings.GenerateOnlyOneTable = chkOneSheet.Checked;
+            settings.ExcludeVirtualAttributes = chkExcludeVirtualAttributes.Checked;
 
             settings.DisplayNamesLangugageCode = ((LanguageCode)cbbLcid.SelectedItem).Lcid;
             settings.FilePath = txtOutputFilePath.Text;
@@ -603,6 +604,7 @@ namespace MsCrmTools.MetadataDocumentGenerator
             chkAddValidForAf.Checked = settings.AddValidForAdvancedFind;
             chkDisplayEntityList.Checked = settings.AddEntitiesSummary;
             chkOneSheet.Checked = settings.GenerateOnlyOneTable;
+            chkExcludeVirtualAttributes.Checked = settings.ExcludeVirtualAttributes;
 
             foreach (ListViewItem item in lvEntities.Items)
             {
@@ -625,6 +627,7 @@ namespace MsCrmTools.MetadataDocumentGenerator
             settings.AddValidForAdvancedFind = chkAddValidForAf.Checked;
             settings.AddEntitiesSummary = chkDisplayEntityList.Checked;
             settings.GenerateOnlyOneTable = chkOneSheet.Checked;
+            settings.ExcludeVirtualAttributes = chkExcludeVirtualAttributes.Checked;
 
             settings.SaveToFile();
         }

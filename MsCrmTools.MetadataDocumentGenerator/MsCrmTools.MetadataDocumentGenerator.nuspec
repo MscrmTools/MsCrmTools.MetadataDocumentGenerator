@@ -12,9 +12,7 @@
     <description>A tool to generate Excel and Word document with entities and attributes information</description>
     <summary>A tool to generate Excel and Word document with entities and attributes information</summary>
     <releaseNotes>
-      UI optimization
-      Fixed losing of attributes selection when ordering tables list (#2)
-      Added all tables metadata in the tables list (#3)
+      Filter out virtual, base fields (#23)
     </releaseNotes>
     <tags>XrmToolBox Metadata Generator</tags>
     <dependencies>

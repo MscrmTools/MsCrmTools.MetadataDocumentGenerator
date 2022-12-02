@@ -613,6 +613,15 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
                     amds = filteredAmds;
                 }
 
+                if (settings.ExcludeVirtualAttributes)
+                {
+                    amds = amds.Where(a => a.AttributeOf == null
+                    && !a.IsRollupDerivedColumn(emd.Attributes)
+                    && (a.AttributeType.Value != AttributeTypeCode.Money
+                    || !a.LogicalName.EndsWith("_base") && a.AttributeType.Value == AttributeTypeCode.Money)
+                    ).ToList();
+                }
+
                 if (amds.Any())
                 {
                     foreach (var amd in amds.Distinct(new AttributeMetadataComparer()).OrderBy(a => a.EntityLogicalName).ThenBy(a => a.LogicalName))

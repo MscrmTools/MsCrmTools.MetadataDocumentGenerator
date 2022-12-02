@@ -80,6 +80,7 @@ namespace MsCrmTools.MetadataDocumentGenerator
             this.lblOutputFilePath = new System.Windows.Forms.Label();
             this.lblOutputType = new System.Windows.Forms.Label();
             this.cbbOutputType = new System.Windows.Forms.ComboBox();
+            this.chkExcludeVirtualAttributes = new System.Windows.Forms.CheckBox();
             this.toolStripMenu.SuspendLayout();
             this.panel1.SuspendLayout();
             this.gbOptions.SuspendLayout();
@@ -99,7 +100,7 @@ namespace MsCrmTools.MetadataDocumentGenerator
             this.toolStripMenu.Location = new System.Drawing.Point(0, 0);
             this.toolStripMenu.Name = "toolStripMenu";
             this.toolStripMenu.Padding = new System.Windows.Forms.Padding(0, 0, 3, 0);
-            this.toolStripMenu.Size = new System.Drawing.Size(3585, 57);
+            this.toolStripMenu.Size = new System.Drawing.Size(2390, 34);
             this.toolStripMenu.TabIndex = 2;
             this.toolStripMenu.Text = "toolStrip1";
             // 
@@ -110,7 +111,7 @@ namespace MsCrmTools.MetadataDocumentGenerator
             this.tssbLoadEntities.Image = global::MsCrmTools.MetadataDocumentGenerator.Properties.Resources.ico_16_0;
             this.tssbLoadEntities.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tssbLoadEntities.Name = "tssbLoadEntities";
-            this.tssbLoadEntities.Size = new System.Drawing.Size(157, 29);
+            this.tssbLoadEntities.Size = new System.Drawing.Size(149, 29);
             this.tssbLoadEntities.Text = "Load Entities";
             this.tssbLoadEntities.ToolTipText = "Load all entities from the connected organization";
             this.tssbLoadEntities.ButtonClick += new System.EventHandler(this.tssbLoadEntities_ButtonClick);
@@ -133,7 +134,7 @@ namespace MsCrmTools.MetadataDocumentGenerator
             this.tsbGenerate.Image = ((System.Drawing.Image)(resources.GetObject("tsbGenerate.Image")));
             this.tsbGenerate.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbGenerate.Name = "tsbGenerate";
-            this.tsbGenerate.Size = new System.Drawing.Size(188, 52);
+            this.tsbGenerate.Size = new System.Drawing.Size(188, 29);
             this.tsbGenerate.Text = "Generate document";
             this.tsbGenerate.Click += new System.EventHandler(this.TsbGenerateClick);
             // 
@@ -151,7 +152,7 @@ namespace MsCrmTools.MetadataDocumentGenerator
             this.settingsToolStripDropDownButton.Image = ((System.Drawing.Image)(resources.GetObject("settingsToolStripDropDownButton.Image")));
             this.settingsToolStripDropDownButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.settingsToolStripDropDownButton.Name = "settingsToolStripDropDownButton";
-            this.settingsToolStripDropDownButton.Size = new System.Drawing.Size(207, 29);
+            this.settingsToolStripDropDownButton.Size = new System.Drawing.Size(199, 29);
             this.settingsToolStripDropDownButton.Text = "Generation settings";
             // 
             // saveCurrentSettingsToolStripMenuItem
@@ -193,6 +194,7 @@ namespace MsCrmTools.MetadataDocumentGenerator
             // 
             // gbOptions
             // 
+            this.gbOptions.Controls.Add(this.chkExcludeVirtualAttributes);
             this.gbOptions.Controls.Add(this.chkAddFormLocation);
             this.gbOptions.Controls.Add(this.chkDisplayEntityList);
             this.gbOptions.Controls.Add(this.chkAddValidForAf);
@@ -655,6 +657,17 @@ namespace MsCrmTools.MetadataDocumentGenerator
             this.cbbOutputType.TabIndex = 0;
             this.cbbOutputType.SelectedIndexChanged += new System.EventHandler(this.CbbOutputTypeSelectedIndexChanged);
             // 
+            // chkExcludeVirtualAttributes
+            // 
+            this.chkExcludeVirtualAttributes.AutoSize = true;
+            this.chkExcludeVirtualAttributes.Location = new System.Drawing.Point(390, 100);
+            this.chkExcludeVirtualAttributes.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.chkExcludeVirtualAttributes.Name = "chkExcludeVirtualAttributes";
+            this.chkExcludeVirtualAttributes.Size = new System.Drawing.Size(582, 36);
+            this.chkExcludeVirtualAttributes.TabIndex = 6;
+            this.chkExcludeVirtualAttributes.Text = "Exclude virtual attributes (name, base, date, state)";
+            this.chkExcludeVirtualAttributes.UseVisualStyleBackColor = true;
+            // 
             // MetadataDocumentGenerator
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
@@ -730,5 +743,6 @@ namespace MsCrmTools.MetadataDocumentGenerator
         private GroupBox grpBoxSearchBy;
         private RadioButton rbDisplayName;
         private RadioButton rbSchemaName;
+        private CheckBox chkExcludeVirtualAttributes;
     }
 }
