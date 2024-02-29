@@ -109,16 +109,26 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
                 var displayName = displayNameLabel != null ? displayNameLabel.Label : "Not Translated";
                 var description = descriptionLabel != null ? descriptionLabel.Label : "Not Translated";
 
+                var typeName = GetNewTypeName(amd.AttributeType.Value);
+                if (amd.AttributeType.Value == AttributeTypeCode.Virtual && amd is MultiSelectPicklistAttributeMetadata)
+                {
+                    typeName = "Choices";
+                }
+                else if (amd.AttributeType.Value == AttributeTypeCode.Virtual && amd is ImageAttributeMetadata)
+                {
+                    typeName = "Image";
+                }
+                else if (amd.AttributeType.Value == AttributeTypeCode.Virtual && amd is FileAttributeMetadata)
+                {
+                    typeName = "File";
+                }
+
                 var metadata = new List<string>
                 {
                     amd.LogicalName,
                     amd.SchemaName,
                     displayName,
-                    amd.AttributeType != null
-                        ? amd.AttributeType.HasValue && amd.AttributeType == AttributeTypeCode.Virtual &&
-                          amd is MultiSelectPicklistAttributeMetadata ? "MutliSelect OptionSet" :
-                        amd.AttributeType.HasValue ? amd.AttributeType.Value.ToString() : string.Empty
-                        : string.Empty,
+                    typeName,
                     description,
                     amd.IsCustomAttribute != null
                         ? amd.IsCustomAttribute.Value.ToString(CultureInfo.InvariantCulture)
@@ -876,6 +886,17 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
                 }
 
             return string.Empty;
+        }
+
+        private string GetNewTypeName(AttributeTypeCode value)
+        {
+            if (value == AttributeTypeCode.Picklist) return "Choice";
+            if (value == AttributeTypeCode.Memo) return "Multiline Text";
+            if (value == AttributeTypeCode.String) return "Text";
+            if (value == AttributeTypeCode.Money) return "Currency";
+            if (value == AttributeTypeCode.Boolean) return "Two options";
+            if (value == AttributeTypeCode.Integer) return "Whole number";
+            return value.ToString();
         }
 
         private void ReportProgress(int percentage, string message)
