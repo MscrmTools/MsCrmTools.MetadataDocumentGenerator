@@ -127,6 +127,14 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
             {
                 sheet.Cells[lineNumber, y].Value = "Choices";
             }
+            else if (amd.AttributeType.Value == AttributeTypeCode.Virtual && amd is ImageAttributeMetadata)
+            {
+                sheet.Cells[lineNumber, y].Value = "Image";
+            }
+            else if (amd.AttributeType.Value == AttributeTypeCode.Virtual && amd is FileAttributeMetadata)
+            {
+                sheet.Cells[lineNumber, y].Value = "File";
+            }
             y++;
 
             var amdDescription = amd.Description.LocalizedLabels.FirstOrDefault(l => l.LanguageCode == settings.DisplayNamesLangugageCode);
@@ -618,7 +626,10 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
                     amds = amds.Where(a => a.AttributeOf == null
                     && !a.IsRollupDerivedColumn(emd.Attributes)
                     && (a.AttributeType.Value != AttributeTypeCode.Money
-                    || !a.LogicalName.EndsWith("_base") && a.AttributeType.Value == AttributeTypeCode.Money)
+                    || !a.LogicalName.EndsWith("_base") && a.AttributeType.Value == AttributeTypeCode.Money
+                    || a.AttributeTypeName == AttributeTypeDisplayName.ImageType
+                    || a.AttributeTypeName == AttributeTypeDisplayName.FileType
+                    )
                     ).ToList();
                 }
 
