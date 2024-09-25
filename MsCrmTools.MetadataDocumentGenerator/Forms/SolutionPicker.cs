@@ -1,4 +1,5 @@
-﻿using Microsoft.Xrm.Sdk;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
 using MsCrmTools.MetadataDocumentGenerator.Helper;
 using System;
@@ -14,6 +15,10 @@ namespace MsCrmTools.MetadataDocumentGenerator.Forms
     {
         private readonly IOrganizationService innerService;
 
+        /// <summary>
+        /// Variable containing the solutions found in the environment.
+        /// </summary>
+        private List<Entity> environmentSolutions = new List<Entity>();
         public SolutionPicker(IOrganizationService service)
         {
             InitializeComponent();
@@ -22,6 +27,35 @@ namespace MsCrmTools.MetadataDocumentGenerator.Forms
         }
 
         public List<Entity> SelectedSolutions { get; set; } = new List<Entity>();
+
+        /// <summary>
+        /// Method that filters solutions that contain part of the text entered in the textbox. The search is made when there are more than three characters entered in the textbox.
+        /// </summary>
+        /// <param name="sender">object</param>
+        /// <param name="e">EventArgs</param>
+        private void filtersolution_TextChanged(object sender, EventArgs e)
+        {
+            var tempList = new List<Entity>();
+
+            var text = filtersolution.Text.ToLower().Trim();
+            
+            tempList = (text.Length < 3) ? environmentSolutions :
+                environmentSolutions.Where(c => c["friendlyname"].ToString().ToLower().Trim().Contains(text)).ToList();
+
+            lstSolutions.Items.Clear();
+
+            foreach (Entity solution in tempList)
+            {
+                ListViewItem item = new ListViewItem(solution["friendlyname"].ToString());
+                item.SubItems.Add(solution["version"].ToString());
+                item.SubItems.Add(((EntityReference)solution["publisherid"]).Name);
+                item.Tag = solution;
+
+                lstSolutions.Items.Add(item);
+            }
+
+            lbltotalsolutions.Text = $"{tempList.Count} - Solutions";
+        }
 
         private void btnSolutionPickerCancel_Click(object sender, EventArgs e)
         {
@@ -96,6 +130,9 @@ namespace MsCrmTools.MetadataDocumentGenerator.Forms
 
         private void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            //Initializes the environmentSolutions property with the list of solutions found in the environment. It will be used to filter the solutions.
+            environmentSolutions = ((EntityCollection)e.Result).Entities.ToList();
+
             foreach (Entity solution in ((EntityCollection)e.Result).Entities)
             {
                 ListViewItem item = new ListViewItem(solution["friendlyname"].ToString());
@@ -105,7 +142,10 @@ namespace MsCrmTools.MetadataDocumentGenerator.Forms
 
                 lstSolutions.Items.Add(item);
             }
-
+            
+            //Displays the total number of solutions found.
+            lbltotalsolutions.Text = $"{environmentSolutions.Count} - Solutions";
+            
             lstSolutions.Enabled = true;
             btnSolutionPickerValidate.Enabled = true;
         }
