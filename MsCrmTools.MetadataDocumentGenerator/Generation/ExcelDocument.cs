@@ -852,9 +852,10 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
                                 {
                                     var label = omdLocLabel.Label;
 
-                                    format += string.Format("\r\n{0}: {1}",
+                                    format += string.Format("\r\n{0}: {1} ({2})",
                                                             omd.Value,
-                                                            label);
+                                                            label,
+                                                            omd.Color ?? "no color");
                                 }
                             }
 

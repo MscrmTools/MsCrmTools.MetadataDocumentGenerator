@@ -812,9 +812,10 @@ namespace MsCrmTools.MetadataDocumentGenerator.Generation
                                                           l =>
                                                           l.LanguageCode == _settings.DisplayNamesLangugageCode);
 
-                                format += string.Format("\n{0}: {1}",
+                                format += string.Format("\n{0}: {1} ({2})",
                                                         omd.Value,
-                                                        optionLabel != null ? optionLabel.Label : "Not Translated");
+                                                        optionLabel != null ? optionLabel.Label : "Not Translated",
+                                                        omd.Color ?? "no color");
                             }
 
                             format += string.Format("\nDefault: {0}",
