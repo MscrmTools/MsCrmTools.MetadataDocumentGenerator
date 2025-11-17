@@ -37,10 +37,10 @@ namespace MsCrmTools.MetadataDocumentGenerator.Helper
                         Criteria = new FilterExpression
                         {
                             Conditions =
-         {
-       new ConditionExpression("solutionid", ConditionOperator.In, batch.Select(s => s.Id).ToArray()),
-          new ConditionExpression("componenttype", ConditionOperator.Equal, 1)
-          }
+                            {
+                                new ConditionExpression("solutionid", ConditionOperator.In, batch.Select(s => s.Id).ToArray()),
+                                new ConditionExpression("componenttype", ConditionOperator.Equal, 1)
+                            }
                         }
                     }).Entities;
 
@@ -72,10 +72,10 @@ namespace MsCrmTools.MetadataDocumentGenerator.Helper
 
                 // Add metadata conditions for this batch
                 entityBatch.ForEach(id =>
-                 {
-                     entityQueryExpression.Criteria.Conditions.Add(
-           new MetadataConditionExpression("MetadataId", MetadataConditionOperator.Equals, id));
-                 });
+                {
+                    entityQueryExpression.Criteria.Conditions.Add(
+                        new MetadataConditionExpression("MetadataId", MetadataConditionOperator.Equals, id));
+                });
 
                 RetrieveMetadataChangesRequest retrieveMetadataChangesRequest = new RetrieveMetadataChangesRequest
                 {
@@ -148,10 +148,10 @@ namespace MsCrmTools.MetadataDocumentGenerator.Helper
                 Criteria = new FilterExpression
                 {
                     Conditions =
-  {
-      new ConditionExpression("objecttypecode", ConditionOperator.Equal, logicalName),
-        new ConditionExpression("type", ConditionOperator.In, new[] {2,7}),
-       }
+                    {
+                        new ConditionExpression("objecttypecode", ConditionOperator.Equal, logicalName),
+                        new ConditionExpression("type", ConditionOperator.In, new[] {2,7}),
+                    }
                 }
             };
 
@@ -180,10 +180,10 @@ namespace MsCrmTools.MetadataDocumentGenerator.Helper
                 Criteria = new FilterExpression
                 {
                     Conditions =
-          {
-     new ConditionExpression("objecttypecode", ConditionOperator.Equal, logicalName),
-    new ConditionExpression("type", ConditionOperator.Equal, 2),
-               }
+                    {
+                        new ConditionExpression("objecttypecode", ConditionOperator.Equal, logicalName),
+                        new ConditionExpression("type", ConditionOperator.Equal, 2),
+                    }
                 }
             };
 
