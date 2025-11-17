@@ -1,4 +1,4 @@
-﻿using Microsoft.Xrm.Sdk;
+using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Messages;
 using Microsoft.Xrm.Sdk.Metadata;
 using Microsoft.Xrm.Sdk.Metadata.Query;
@@ -16,58 +16,78 @@ namespace MsCrmTools.MetadataDocumentGenerator.Helper
     /// </summary>
     internal class MetadataHelper
     {
+        private const int SOLUTION_BATCH_SIZE = 50; // Maximum solutions to process in a single batch
+        private const int ENTITY_METADATA_BATCH_SIZE = 100; // Maximum entity metadata IDs to retrieve in a single request
+
         public static List<EntityMetadata> GetEntities(List<Entity> solutions, IOrganizationService service)
         {
-            var list = new List<Guid>();
+            var allObjectIds = new HashSet<Guid>(); // Use HashSet to avoid duplicates
 
             if (solutions.Count > 0)
             {
-                var components = service.RetrieveMultiple(new QueryExpression("solutioncomponent")
+                // Process solutions in batches to avoid request size limits
+                for (int i = 0; i < solutions.Count; i += SOLUTION_BATCH_SIZE)
                 {
-                    ColumnSet = new ColumnSet("objectid"),
-                    NoLock = true,
-                    Criteria = new FilterExpression
-                    {
-                        Conditions =
-                        {
-                            new ConditionExpression("solutionid", ConditionOperator.In,
-                                solutions.Select(s => s.Id).ToArray()),
-                            new ConditionExpression("componenttype", ConditionOperator.Equal, 1)
-                        }
-                    }
-                }).Entities;
+                    var batch = solutions.Skip(i).Take(SOLUTION_BATCH_SIZE).ToList();
 
-                list = components.Select(component => component.GetAttributeValue<Guid>("objectid"))
-                    .ToList();
+                    var components = service.RetrieveMultiple(new QueryExpression("solutioncomponent")
+                    {
+                        ColumnSet = new ColumnSet("objectid"),
+                        NoLock = true,
+                        Criteria = new FilterExpression
+                        {
+                            Conditions =
+                            {
+                                new ConditionExpression("solutionid", ConditionOperator.In, batch.Select(s => s.Id).ToArray()),
+                                new ConditionExpression("componenttype", ConditionOperator.Equal, 1)
+                            }
+                        }
+                    }).Entities;
+
+                    // Add unique object IDs to the set
+                    foreach (var component in components)
+                    {
+                        allObjectIds.Add(component.GetAttributeValue<Guid>("objectid"));
+                    }
+                }
             }
 
-            EntityQueryExpression entityQueryExpression = new EntityQueryExpression
-            {
-                Criteria = new MetadataFilterExpression(LogicalOperator.Or),
-                Properties = new MetadataPropertiesExpression
-                {
-                    AllProperties = true
-                }
-            };
+            // Convert to list for batching
+            var allEntityIds = allObjectIds.ToList();
+            var allEntityMetadata = new List<EntityMetadata>();
 
-            if (list.Count > 0)
+            // Process entity metadata retrieval in batches to avoid large query issues
+            for (int i = 0; i < allEntityIds.Count; i += ENTITY_METADATA_BATCH_SIZE)
             {
-                list.ForEach(id =>
+                var entityBatch = allEntityIds.Skip(i).Take(ENTITY_METADATA_BATCH_SIZE).ToList();
+
+                EntityQueryExpression entityQueryExpression = new EntityQueryExpression
+                {
+                    Criteria = new MetadataFilterExpression(LogicalOperator.Or),
+                    Properties = new MetadataPropertiesExpression
+                    {
+                        AllProperties = true
+                    }
+                };
+
+                // Add metadata conditions for this batch
+                entityBatch.ForEach(id =>
                 {
                     entityQueryExpression.Criteria.Conditions.Add(
                         new MetadataConditionExpression("MetadataId", MetadataConditionOperator.Equals, id));
                 });
+
+                RetrieveMetadataChangesRequest retrieveMetadataChangesRequest = new RetrieveMetadataChangesRequest
+                {
+                    Query = entityQueryExpression,
+                    ClientVersionStamp = null
+                };
+
+                var response = (RetrieveMetadataChangesResponse)service.Execute(retrieveMetadataChangesRequest);
+                allEntityMetadata.AddRange(response.EntityMetadata);
             }
 
-            RetrieveMetadataChangesRequest retrieveMetadataChangesRequest = new RetrieveMetadataChangesRequest
-            {
-                Query = entityQueryExpression,
-                ClientVersionStamp = null
-            };
-
-            var response = (RetrieveMetadataChangesResponse)service.Execute(retrieveMetadataChangesRequest);
-
-            return response.EntityMetadata.ToList();
+            return allEntityMetadata;
         }
 
         /// <summary>
