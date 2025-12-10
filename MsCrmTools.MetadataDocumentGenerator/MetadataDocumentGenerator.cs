@@ -647,11 +647,21 @@ namespace MsCrmTools.MetadataDocumentGenerator
 
         private void FillListEntities(List<Entities> items)
         {
+            // Save checked state before clearing
+            var checkedSchemaNames = new HashSet<string>();
+            foreach (ListViewItem item in lvEntities.Items)
+            {
+                if (item.Checked)
+                {
+                    checkedSchemaNames.Add(item.Tag.ToString());
+                }
+            }
+
             lvEntities.Items.Clear();
             lvEntities.BeginUpdate();
             foreach (var item in items)
             {
-                lvEntities.Items.Add(new ListViewItem
+                var listViewItem = new ListViewItem
                 {
                     Text = item.DisplayName,
                     SubItems =
@@ -659,7 +669,15 @@ namespace MsCrmTools.MetadataDocumentGenerator
                         item.SchemaName
                     },
                     Tag = item.SchemaName
-                });
+                };
+                
+                // Restore checked state if this entity was previously checked
+                if (checkedSchemaNames.Contains(item.SchemaName))
+                {
+                    listViewItem.Checked = true;
+                }
+                
+                lvEntities.Items.Add(listViewItem);
             }
             lvEntities.EndUpdate();
         }
