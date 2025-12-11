@@ -162,6 +162,6 @@ if (amd.IsRollupDerivedColumn(allAttributes)) { ... }
 ## Resources
 
 - [XrmToolBox Documentation](https://www.xrmtoolbox.com/)
-- [Microsoft Dynamics CRM SDK](https://docs.microsoft.com/en-us/dynamics365/)
+- [Microsoft Dynamics CRM SDK](https://learn.microsoft.com/en-us/dynamics365/)
 - [EPPlus Documentation](https://github.com/EPPlusSoftware/EPPlus)
-- [Open XML SDK](https://docs.microsoft.com/en-us/office/open-xml/open-xml-sdk)
+- [Open XML SDK](https://learn.microsoft.com/en-us/office/open-xml/open-xml-sdk)
