@@ -26,6 +26,7 @@ MsCrmTools.MetadataDocumentGenerator/
 ├── Generation/                     # Document generation
 │   ├── ExcelDocument.cs            # Excel generation logic
 │   ├── IDocument.cs                # Document interface
+│   ├── WordDocument.cs             # Base Word generation
 │   ├── WordDocumentDocX.cs         # Word generation (DocX)
 │   └── WordDocumentOpenXml.cs      # Word generation (OpenXML)
 ├── Helper/                         # Utility classes
@@ -132,7 +133,7 @@ if (amd.IsRollupDerivedColumn(allAttributes)) { ... }
 
 - Always check for security vulnerabilities in NuGet packages before updating
 - Be cautious when updating XrmToolBoxPackage - ensure compatibility
-- EPPlus 5.x uses a commercial license for some scenarios - version 5.4.2 is used
+- EPPlus 5.x uses the Polyform Noncommercial license - it's free for non-commercial use but requires a commercial license for commercial applications. Version 5.4.2 is currently in use.
 
 ## Common Tasks
 
